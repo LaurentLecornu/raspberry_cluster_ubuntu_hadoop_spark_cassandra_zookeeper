@@ -48,19 +48,40 @@ Cette première partie vous guidera dans l'assemblage du cluster physique, l'ins
 
 ### 2.1 De quoi avez-vous besoin ?
 
-* 22 Raspberry Pi 4 4 Go 
-* 10 Raspberry Pi 3 1 Go
-* 8 switchs 4 ports gigabit (10/100/1000)
-* 1 switch 16 ports (10/100/1000)
-* Câbles USB-C pour alimenter le Pi
-* Cartes micro SD pour vos framboises
-* Câbles Ethernet pour la mise en réseau
-* Alimentation (j'utilise pour l'instant les chargeurs raspberry pi 4)
-* Alimentation 4 ports USB pour les raspberry pi 3
-* Un support acrylique pour les cartes raspberry.
+Nous avons monté 2 clusters un premier de base avec 4 raspberry pi 3 remplacé par des raspberry pi 4 et un plus grand cluster composé de 22 raspberry pi 4 et de 10 raspberry pi 3.
+
+Nous donnerons les explications pour le cluster composé de 4 raspberry pi 4. 
+
+### 2.1.1 Matériel utilisé
+
+* Cluster de base 
+
+	* 4 Raspberry Pi 4 4 Go 
+	* 1 switchs 5 ports gigabit (10/100/1000)(Netfear GS 205)
+	* 4 alimentations USB c, 15W pour raspberry pi 4
+	* 4 cartes micro SD 32 GB (SanDisk Edge) 
+	* 4 câbles 25cm Ethernet pour coonecter les raspberri au switch
+	* 1 câble ethernet 3m 
+	* 1 MakerFun pour Raspberry Pi 4 Model B + Boîtier avec Ventilateur et radiateur en Acrylique en Couches superposables
+	* 2 multiprises 5 prises (seuls 3 chargeurs peuvent être branchés par multiprise) avec un bouton on/off
+
+* Cluster mixte
+
+	* 22 Raspberry Pi 4 4 Go 
+	* 10 Raspberry Pi 3 1 Go
+	* 8 switchs 5 ports gigabit (10/100/1000)
+	* 1 switch 16 ports (10/100/1000)
+	* 20 alimentations USB c, 15W pour raspberry pi 4
+	* 32 Cartes micro SD pour vos raspberry
+	* 1 câble ethernet 3m
+	* 40 Câbles 25cm  Ethernet pour la mise en réseau
+	* 3 Alimentation 4 ports USB pour les raspberry pi 3
+	* 8 MakerFun pour Raspberry Pi 4 Model B + Boîtier avec Ventilateur et radiateur en Acrylique en Couches superposables
+	* 12 multiprises 5 prises (seuls 3 chargeurs peuvent être branchés par multiprise) avec un bouton on/off
 
 
-#### 2.1.1 Quelques explications sur le matériel :
+
+#### 2.1.2 Quelques explications sur le matériel :
 
 Le Raspberry Pi 4 dispose du wifi et d'un Ethernet gigabit. J'ai opté par un réseau câblé pour la communication en cluster, en utilisant le commutateur gigabit. J'utilise également le wifi pour l'accès à distance. Ainsi, vous devriez utiliser des câbles cat 6.
 
@@ -68,33 +89,36 @@ L'achat de cartes SD de bonne qualité avec une vitesse de lecture/écriture él
 Il est possible d'améliorer les performances en branchant une carte ssd via le port usb c [].
 
 
-J'ai utilisé les guides suivants [2, 3, 4] :
+J'ai utilisé les guides suivants [2, 3, 4, 5] :
 
 * [Building a Raspberry Pi Hadoop / Spark Cluster](https://dev.to/awwsmm/building-a-raspberry-pi-hadoop-spark-cluster-8b2)
-	* Pro tip: if you're only looking for how to configure Hadoop and Spark to run on a cluster, start here. Motivation and…
 
 
 * [Build Raspberry Pi Hadoop/Spark Cluster from scratch](https://medium.com/analytics-vidhya/build-raspberry-pi-hadoop-spark-cluster-from-scratch-c2fa056138e0)
-	* This article walks you through the long process of building Hadoop Cluster with Raspberry Pi from Scratch.
 
 	
 * [Building a Hadoop cluster with Raspberry Pi - IBM Developer Recipes](https://developer.ibm.com/recipes/tutorials/building-a-hadoop-cluster-with-raspberry-pi/)
-	* IntroductionHadoop has great potential and is one of the best known projects for big data. In this tutorial, we will…
 
-
+* [Raspberry PI Hadoop Cluster](http://www.widriksson.com/raspberry-pi-hadoop-cluster/) Ce lien m'avait permis de construire m'ont premier cluster hadoop sous raspberry pi 3. 
 
 Afin de vous aider lors de la lecture de ce tutoriel, vous retrouverez les différents fichiers de configuration dans une structure de dossiers similaire à celle qui existe dans les raspberry (attention  - les IP, les noms de serveurs, etc., sont très certainement différents pour vous). 
 
 Tous les fichiers sont dans la version finale, avec des versions distribuées de Hadoop, Spark.
 
-### 2.2 Installation d'un système opérationnel
+### 2.2 Montage du cluster
+
+La première étape consiste au montage des boitiers avec les raspberry, de relier les alimentations, les cables réseaux.
+ 
+
+### 2.3 Installation d'un système opérationnel
 
 Tout d'abord, vous devez assembler les éléments physiques dans le support du cluster, moins les cartes SD. 
 
 
 Mon ordinateur portable fonctionne sous mac os X - et j'utilise régulièrement le terminal et brew ou apt-get. 
 
-#### 2.2.1 Télécharger et installer l'imageur Raspberry Pi
+
+#### 2.3.1 Télécharger et installer l'imageur Raspberry Pi
 
 Le meilleur outil pour créer la carte micro SD avec le serveur Ubuntu est le [Raspberry Pi Imager](https://www.raspberrypi.org/software/) [5]. L'outil est disponible pour Windows, Ubuntu et Mac.
 
@@ -102,11 +126,13 @@ Cet utilitaire gravera votre système d'exploitation initial en version vierge.
 
 J'ai essayé d'utiliser cet adaptateur microSD vers SD bon marché qui arrive généralement avec la carte micro SD dans l'emplacement SD de l'ordinateur portable. C'est un peu lent.
 
-Le Raspberry Pi 4 a une architecture AMR64. Le Raspberry pi 3 possède une architecture 32 bis. 
+Le Raspberry Pi 4 a une architecture 64 bits. Le Raspberry pi 3 possède une architecture 32 bits. 
 
 Lors de mes premières tentatives, j'ai utilisé le Raspbian (seule la version 32 bits disponible) - mais j'ai eu des problèmes avec l'installation de Spark.
 
-J'ai décidé, en lisant quelques tuoriels,  d'utiliser la version Ubuntu 64 bits (recommandée par Ubuntu pour Pi 4).
+J'ai décidé, après lecture de quelques tutoriels,  d'utiliser la version Ubuntu 64 bits (recommandée par Ubuntu pour Pi 4) (et la version 32 bits pour les Pi 3).
+
+* **Initialisation des SD**
 
 Insérez votre SD et démarrez l'imageur Raspberry Pi et installez le serveur Ubuntu 20.04 64bit. 
 Faites de même pour toutes vos cartes PI Micro SD (pour les raspberry pi 4)
@@ -114,9 +140,9 @@ Faites de même pour toutes vos cartes PI Micro SD (pour les raspberry pi 4)
 Le serveur Ubuntu 20.04 est disponible en version minimale, configuré pour connecter le réseau Ethernet par DHCP.
 
 
-#### 2.2.2 Connexion au réseau
+#### 2.3.2 Connexion au réseau
 
-Il s'agit d'un cluster - le réseau est primordial. Tout ce tutoriel suppose que vous avez un réseau domestique avec un routeur / passerelle.
+Il s'agit d'un cluster - le réseau est primordial. Tout ce tutoriel suppose que vous avez un réseau domestique avec un routeur ou une passerelle.
 
 
 Vous aurez besoin d'accéder au système d'exploitation pour configurer votre réseau. 
@@ -146,7 +172,7 @@ Mettez sous tension un seul Raspberry à la fois, configurez son réseau, son no
 Lorsque vous mettez un Pi 4 sous tension, vous verrez une LED rouge et verte clignoter près du micro SD. La LED rouge est alimentée et le vert montre qu'il accède à votre mémoire secondaire (le micro SD).
 Tous mes Pi ont la même configuration pour l'emplacement de l'utilisateur/mot de passe et des fichiers. Cela facilite la gestion du cluster.
 
-#### 2.2.3 La première tâche consiste à configurer votre réseau.
+#### 2.3.3 La première tâche consiste à configurer votre réseau.
 
 Comme je l'ai écrit précédemment, j'ai décidé de configurer Ethernet. 
 
@@ -189,6 +215,7 @@ Vous devez adapter le fichier à votre environnement. Habituellement, il vous su
 | pi-node13 | 192.168.0.113 |
 | pi-node14 | 192.168.0.114 |
 | pi-node15 | 192.168.0.115 |
+| pi-node16 | 192.168.0.116 |
 
 Remarque - assurez-vous de supprimer la plage que vous avez choisie de la plage que votre routeur peut utiliser pour les connexions DHCP.
 
@@ -196,7 +223,7 @@ Une fois que vous avez des connexions réseau stables, vous pouvez démarrer la 
 
 
 
-### 2.3 Créez vos utilisateurs
+### 2.4 Créez vos utilisateurs
 
 Vous allez créer le même utilisateur dans tous les nœuds, avec un accès sudo :
 
@@ -222,10 +249,13 @@ Vous trouverez utile d'installer le paquet net-tools ! Il est livré avec *netst
     sudo apt install python3 python-is-python3
     sudo apt install python3-pip
 
-### 2.4 accès au bureau à distance
+### 2.5 accès au bureau à distance
 
-J'ai installé une interface graphique légère (xfce4) avec un navigateur Web (chromium) et un accès au bureau à distance (xrdp). 
-Cependant, ce n'est pas vraiment nécessaire car je me connecte via *ssh*.
+J'ai égalemebt installé une interface graphique légère (xfce4) avec un navigateur Web (chromium) et un accès au bureau à distance (xrdp). 
+
+Dans mon cas, ce n'est pas nécessaire car je me connecte via *ssh* et que je fais tout via un terminal. Mais il arrive qu'il soit nécessaire de brancher un clavier, une souris et un écran.
+
+Vous pouvez choisir n'importe quelle interface graphique.
 
 
 Afin d'activer l'accès au bureau à distance, vous devez :
@@ -260,7 +290,7 @@ Juste au cas où, installez le support extFat  :
     sudo apt install exfat-fuse
     
 
-### 2.5 Configuration du hostname et des hosts
+### 2.6 Configuration du hostname et des hosts
 
 Vous devez mettre à jour le nom d'hôte et aussi les fichiers hôtes dans /etc. Voir les exemples dans GitHub.
 Note - supprimer du fichier hôte la référence à localhost 127.0.01.
@@ -285,7 +315,7 @@ Note - supprimer du fichier hôte la référence à localhost 127.0.01.
 
     pi-node13
 
-### 2.6 Installation de Java
+### 2.7 Installation de Java
 
 C'était un talon d'Achille :
 Hadoop est compilé et fonctionne bien sur Java8. Je l'ai cherché, mais je n'ai pas trouvé de build de Java Hotspot 8 ou Oracle Java 8 pour l'architecture AMR64. La solution retenu par la communauté est d'utiliser l'OpenJDK8, déjà disponible dans les référentiels Ubuntu.
@@ -304,7 +334,7 @@ Voici ma version :
     OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode)
 
 
-### 2.7 Configuration de SSH
+### 2.8 Configuration de SSH
 
 Modifier le fichier  : home/pi/.ssh/config pour créer des raccourcis pour ssh
 
@@ -363,7 +393,7 @@ Et copiez sur tous les nœuds :
 Remarque - vous devez effectuer ce processus dans chaque nœud de cluster. En fin de compte, tous les nœuds auront toutes les clés publiques dans leurs listes. C'est important - ne pas avoir la clé ce qui empêcherait la communication de machine à machine après.
 
 
-### 2.8 Scripts pour gérer le cluster
+### 2.9 Scripts pour gérer le cluster
 
 Créez des fonctions pour vous aider dans la gestion du cluster, en ajoutant ce qui suit dans le fichier suivant :
 
@@ -406,7 +436,7 @@ exécutez la commande :
 
 Vous devez le faire dans tous les nœuds. Utilisez *scp* pour copier entre les nœuds si vous préférez.
 
-### 2.9 Synchronisation de l'heure
+### 2.10 Synchronisation de l'heure
 
 Habituellement, je synchronise toutes mes machines avec un serveur de temps en UTC. Dans un cluster, c'est encore plus important.
 
@@ -426,14 +456,16 @@ Cette dernière commande utilise la date *htpdate* pour synchroniser les horloge
 
 
 
-[1] P. G. Taranti. [https://github.com/ptaranti/RaspberryPiCluster](https://github.com/ptaranti/RaspberryPiCluster)
+[1] P. G. Taranti. [https://github.com/ptaranti/RaspberryPiCluster](https://github.com/ptaranti/RaspberryPiCluster), consulté le 27/01/2021
 
-[2] A. W. Watson. [Building a Raspberry Pi Hadoop / Spark Cluster (2019)](https://dev.to/awwsmm/building-a-raspberry-pi-hadoop-spark-cluster-8b2)
+[2] A. W. Watson. [Building a Raspberry Pi Hadoop / Spark Cluster (2019)](https://dev.to/awwsmm/building-a-raspberry-pi-hadoop-spark-cluster-8b2), consulté le 27/01/2021
 
-[3] W. H. Liang. [Build Raspberry Pi Hadoop/Spark Cluster from scratch (2019)](https://medium.com/analytics-vidhya/build-raspberry-pi-hadoop-spark-cluster-from-scratch-c2fa056138e0)
+[3] W. H. Liang. [Build Raspberry Pi Hadoop/Spark Cluster from scratch (2019)](https://medium.com/analytics-vidhya/build-raspberry-pi-hadoop-spark-cluster-from-scratch-c2fa056138e0), consulté le 27/01/2021
 
-[4] A. Verdugo. [Building a Hadoop cluster with Raspberry Pi: Installing, configuring and testing a distributed storage and processing cluster with single-board computers](https://developer.ibm.com/recipes/tutorials/building-a-hadoop-cluster-with-raspberry-pi/) (2017)
+[4] A. Verdugo. [Building a Hadoop cluster with Raspberry Pi: Installing, configuring and testing a distributed storage and processing cluster with single-board computers](https://developer.ibm.com/recipes/tutorials/building-a-hadoop-cluster-with-raspberry-pi/) (2017), consulté le 27/01/2021
 
-[5] G. Hollingworth. [Introducing Raspberry Pi Imager, our new imaging utility ](https://www.raspberrypi.org/blog/raspberry-pi-imager-imaging-utility/)(2020)
+[5] G. Hollingworth. [Introducing Raspberry Pi Imager, our new imaging utility ](https://www.raspberrypi.org/blog/raspberry-pi-imager-imaging-utility/)(2020), consulté le 27/01/2021
 
-[6] A. Ajisaka. [Hadoop Java Versions](https://cwiki.apache.org/confluence/display/HADOOP/Hadoop+Java+Versions) (2020)
+[6] A. Ajisaka. [Hadoop Java Versions](https://cwiki.apache.org/confluence/display/HADOOP/Hadoop+Java+Versions) (2020), consulté le 27/01/2021
+
+[6]J. Widriksson. [Raspberry PI Hadoop Cluster](http://www.widriksson.com/raspberry-pi-hadoop-cluster/) (2014), consulté le 27/01/2021
