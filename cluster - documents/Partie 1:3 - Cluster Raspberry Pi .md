@@ -237,7 +237,6 @@ Les commandes *usermod* assurent l'accès à *sudo*.
 
 Connectez-vous en tant que pi et mettez à jour votre système !
 
-    sudo apt
     sudo apt update
     sudo apt upgrade
 
@@ -317,9 +316,10 @@ Note - supprimer du fichier `hosts` la référence à localhost 127.0.01.
 ### 2.7 Installation de Java
 
 C'était un talon d'Achille :
-Hadoop est compilé et fonctionne bien sur Java8. Je l'ai cherché, mais je n'ai pas trouvé de build de Java Hotspot 8 ou Oracle Java 8 pour l'architecture AMR64. La solution retenu par la communauté est d'utiliser l'OpenJDK8, déjà disponible dans les référentiels Ubuntu.
+Hadoop est compilé et fonctionne bien sur Java8. 
+Il ne semble pas exiter de build de Java Hotspot 8 ou Oracle Java 8 pour l'architecture AMR64. La solution retenu par la communauté est d'utiliser l'OpenJDK8, déjà disponible dans les référentiels Ubuntu.
 
-Vous trouverez des informations sur le support Hadoop et Java dans [6] :
+Vous trouverez des informations sur le support Hadoop et Java dans [5] :
 
 Pour installer java :
 
