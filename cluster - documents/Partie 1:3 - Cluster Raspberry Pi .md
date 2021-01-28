@@ -21,7 +21,6 @@ En raison de la taille et pour des raisons pédagogiques, j'ai également divis�
 * Partie 2 : Hadoop et Spark
 * Partie 3 : Zookeeper et Kafka
 
-Tous les fichiers de configuration utilisés seront disponibles à l'adresse [2].
 
 
 *Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer toutes mes sources. Étant donné que différentes versions de logiciels peuvent se comporter de manière distincte en raison de leurs dépendances, je vous suggère d'utiliser les mêmes versions que celles que j'ai utilisées lors de votre premier essai.*
@@ -89,17 +88,15 @@ L'achat de cartes SD de bonne qualité avec une vitesse de lecture/écriture él
 Il est possible d'améliorer les performances en branchant une carte ssd via le port usb c [].
 
 
-J'ai utilisé les guides suivants [2, 3, 4, 5] :
+J'ai utilisé les guides suivants [2, 3, 4] :
 
-* [Building a Raspberry Pi Hadoop / Spark Cluster](https://dev.to/awwsmm/building-a-raspberry-pi-hadoop-spark-cluster-8b2)
+* [Building a Raspberry Pi Hadoop / Spark Cluster (2019)](https://dev.to/awwsmm/building-a-raspberry-pi-hadoop-spark-cluster-8b2)
 
 
-* [Build Raspberry Pi Hadoop/Spark Cluster from scratch](https://medium.com/analytics-vidhya/build-raspberry-pi-hadoop-spark-cluster-from-scratch-c2fa056138e0)
+* [Build Raspberry Pi Hadoop/Spark Cluster from scratch (2019)](https://medium.com/analytics-vidhya/build-raspberry-pi-hadoop-spark-cluster-from-scratch-c2fa056138e0) par Henry Liang
 
-	
-* [Building a Hadoop cluster with Raspberry Pi - IBM Developer Recipes](https://developer.ibm.com/recipes/tutorials/building-a-hadoop-cluster-with-raspberry-pi/)
 
-* [Raspberry PI Hadoop Cluster](http://www.widriksson.com/raspberry-pi-hadoop-cluster/) 
+* [Raspberry PI Hadoop Cluster](http://www.widriksson.com/raspberry-pi-hadoop-cluster/) par Jonas Widriksson (2014)
 	* Ce lien m'avait permis de construire mon premier cluster hadoop sous raspberry pi 3. 
 
 Afin de vous aider lors de la lecture de ce tutoriel, vous retrouverez les différents fichiers de configuration dans une structure de dossiers similaire à celle qui existe dans les raspberry (attention - les IP, les noms de serveurs, etc., sont très certainement différents pour vous). 
@@ -284,7 +281,7 @@ Redémarrez les services :
 
 On peut installer chrome :
 
-    sudo apt-get install chrome-browser
+    sudo apt-get install chromium-browser
 
 Juste au cas où, installez le support extFat  :
 
@@ -464,10 +461,11 @@ Cette dernière commande utilise la date *htpdate* pour synchroniser les horloge
 
 [3] W. H. Liang. [Build Raspberry Pi Hadoop/Spark Cluster from scratch (2019)](https://medium.com/analytics-vidhya/build-raspberry-pi-hadoop-spark-cluster-from-scratch-c2fa056138e0), consulté le 27/01/2021
 
-[4] A. Verdugo. [Building a Hadoop cluster with Raspberry Pi: Installing, configuring and testing a distributed storage and processing cluster with single-board computers](https://developer.ibm.com/recipes/tutorials/building-a-hadoop-cluster-with-raspberry-pi/) (2017), consulté le 27/01/2021
+[4]J. Widriksson. [Raspberry PI Hadoop Cluster](http://www.widriksson.com/raspberry-pi-hadoop-cluster/) (2014), consulté le 27/01/2021
 
-[5] G. Hollingworth. [Introducing Raspberry Pi Imager, our new imaging utility ](https://www.raspberrypi.org/blog/raspberry-pi-imager-imaging-utility/)(2020), consulté le 27/01/2021
 
-[6] A. Ajisaka. [Hadoop Java Versions](https://cwiki.apache.org/confluence/display/HADOOP/Hadoop+Java+Versions) (2020), consulté le 27/01/2021
+[5] A. Ajisaka. [Hadoop Java Versions](https://cwiki.apache.org/confluence/display/HADOOP/Hadoop+Java+Versions) (2020), consulté le 27/01/2021
 
-[6]J. Widriksson. [Raspberry PI Hadoop Cluster](http://www.widriksson.com/raspberry-pi-hadoop-cluster/) (2014), consulté le 27/01/2021
+[6] G. Hollingworth. [Introducing Raspberry Pi Imager, our new imaging utility](https://www.raspberrypi.org/blog/raspberry-pi-imager-imaging-utility/) (2020), consulté le 27/01/2021
+
+
