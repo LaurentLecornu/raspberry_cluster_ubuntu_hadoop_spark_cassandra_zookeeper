@@ -15,7 +15,7 @@ Cette installation a été réalisé à partir d'un mac en utilisant une connexi
 Il est conseillé de posséder un cluster d'au moins de trois raspberry car vous devez définir une communication entre divers éléments.
 
 
-En raison de la taille et pour des raisons pédagogiques, j'ai également diviser ce tutoriel en deux parties.
+En raison de la taille et pour des raisons pédagogiques, j'ai également divisé ce tutoriel en 3 parties.
 
 * Partie 1 : Introduction, système opérationnel et mise en réseau (mise en place et réglage du cluster)
 * Partie 2 : Hadoop et Spark
@@ -28,15 +28,15 @@ Tous les fichiers de configuration utilisés seront disponibles à l'adresse [2]
 
 ## 1. Introduction
 
-L'objectif est de reproduire dans un cadre pédagogique et à un coût limité des cluster big dat.
+L'objectif est de reproduire dans un cadre pédagogique et à un coût limité des cluster big data.
 
-Sur  cet environnement, j'utiliserai des solutions prises en charge par Apache  : Hadoop, Spark  installées sur un cluster. 
+Sur cet environnement, j'utiliserai des solutions prises en charge par Apache : Hadoop, Spark, Zookeeper, Kafka. 
 
-L'environnement Big Data nécessite une solution distribuée dans le monde réel - l'évolutivité est une exigence primordiale. Ainsi, apprendre à configurer l'environnement est important pour moi dans un cadre pédagogique. C'est pourquoi je n'utiliserais pas pour cela  des solutions basées sur le cloud.
+L'environnement Big Data nécessite une solution distribuée dans le monde réel - l'évolutivité est une exigence primordiale. Ainsi, apprendre à configurer l'environnement est important pour moi dans un cadre pédagogique. C'est pourquoi je n'utiliserais pas pour cela des solutions basées sur le cloud.
 
 Le nouveau Raspberry Pi 4 est disponible jusqu'à 8 Go de RAM. Ce n'est pas une Ferrari, mais il me parait suffisant pour une exploitation dans un cadre pédagogique. 
 
-J'ai lu quelques textes sur la façon d'assembler des clusters avec Raspberry, pour la solution Hadoop + Spark - et j'ai commencé avec un cluster de raspberry pi 3. celui-ci était un peu limité.
+J'ai lu quelques textes sur la façon d'assembler des clusters avec Raspberry, pour la solution Hadoop + Spark - et j'ai commencé avec un cluster de raspberry pi 3. Celui-ci était un peu limité.
 
 Puis j'ai décidé d'ajouter des Raspberry Pi 4 ce qui m'a permis d'inclure d'autre modules comme spark, cassandra...
 
@@ -57,10 +57,10 @@ Nous donnerons les explications pour le cluster composé de 4 raspberry pi 4.
 * Cluster de base 
 
 	* 4 Raspberry Pi 4 4 Go 
-	* 1 switchs 5 ports gigabit (10/100/1000)(Netfear GS 205)
+	* 1 switch 5 ports gigabit (10/100/1000)(Netgear GS 205)
 	* 4 alimentations USB c, 15W pour raspberry pi 4
 	* 4 cartes micro SD 32 GB (SanDisk Edge) 
-	* 4 câbles 25cm Ethernet pour coonecter les raspberri au switch
+	* 4 câbles 25cm Ethernet pour connecter les raspberry au switch
 	* 1 câble ethernet 3m 
 	* 1 MakerFun pour Raspberry Pi 4 Model B + Boîtier avec Ventilateur et radiateur en Acrylique en Couches superposables
 	* 2 multiprises 5 prises (seuls 3 chargeurs peuvent être branchés par multiprise) avec un bouton on/off
@@ -99,15 +99,16 @@ J'ai utilisé les guides suivants [2, 3, 4, 5] :
 	
 * [Building a Hadoop cluster with Raspberry Pi - IBM Developer Recipes](https://developer.ibm.com/recipes/tutorials/building-a-hadoop-cluster-with-raspberry-pi/)
 
-* [Raspberry PI Hadoop Cluster](http://www.widriksson.com/raspberry-pi-hadoop-cluster/) Ce lien m'avait permis de construire m'ont premier cluster hadoop sous raspberry pi 3. 
+* [Raspberry PI Hadoop Cluster](http://www.widriksson.com/raspberry-pi-hadoop-cluster/) 
+	* Ce lien m'avait permis de construire mon premier cluster hadoop sous raspberry pi 3. 
 
-Afin de vous aider lors de la lecture de ce tutoriel, vous retrouverez les différents fichiers de configuration dans une structure de dossiers similaire à celle qui existe dans les raspberry (attention  - les IP, les noms de serveurs, etc., sont très certainement différents pour vous). 
+Afin de vous aider lors de la lecture de ce tutoriel, vous retrouverez les différents fichiers de configuration dans une structure de dossiers similaire à celle qui existe dans les raspberry (attention - les IP, les noms de serveurs, etc., sont très certainement différents pour vous). 
 
 Tous les fichiers sont dans la version finale, avec des versions distribuées de Hadoop, Spark.
 
 ### 2.2 Montage du cluster
 
-La première étape consiste au montage des boitiers avec les raspberry, de relier les alimentations, les cables réseaux.
+La première étape consiste au montage des boitiers avec les raspberry, de relier les alimentations, les câbles réseaux.
  
 
 ### 2.3 Installation d'un système opérationnel
@@ -130,7 +131,7 @@ Le Raspberry Pi 4 a une architecture 64 bits. Le Raspberry pi 3 possède une arc
 
 Lors de mes premières tentatives, j'ai utilisé le Raspbian (seule la version 32 bits disponible) - mais j'ai eu des problèmes avec l'installation de Spark.
 
-J'ai décidé, après lecture de quelques tutoriels,  d'utiliser la version Ubuntu 64 bits (recommandée par Ubuntu pour Pi 4) (et la version 32 bits pour les Pi 3).
+J'ai décidé, après lecture de quelques tutoriels, d'utiliser la version Ubuntu 64 bits (recommandée par Ubuntu pour Pi 4) (et la version 32 bits pour les Pi 3).
 
 * **Initialisation des SD**
 
@@ -155,7 +156,7 @@ Vous pouvez le faire de deux façons différentes :
 
 Mon serveur dhcp domestique contenait les numéros ip et les noms qui seront utilisé par chaque raspberry pi. Cela m'a permis lors du démarrage des raspberry pi de tomber sur les bons couples nom/ip.
 
-Dans mon cas, un rapide coup d'oeil sur le serveur dhcp (un nas synology) et/ou l'utilisation Superscan m'ont permis de connaître le numéro ip de chaque nouvel arrivant (démarrer les raspberry pi successivement). je me suis connecté via ssh à chaque raspberry.
+Dans mon cas, un rapide coup d'œil sur le serveur dhcp (un nas synology) et/ou l'utilisation Superscan m'ont permis de connaître le numéro ip de chaque nouvel arrivant (démarrer les raspberry pi successivement). Je me suis connecté via ssh à chaque raspberry.
 
 Par exemple : 
 
@@ -164,7 +165,7 @@ ssh ubuntu@pi-node13
 ```
 
 L'utilisateur/mot de passe par défaut est ubuntu/ubuntu, et il vous sera demandé de changer le mot de passe lors de la première connexion. 
-J'ai changé les mots de passe en « raspberry ». Il s'agit d'un laboratoire, évitez d'utiliser vos vrais mots de passe dans le cluster. Une fois le mot de passe changé le raspberry efectuera un `reboot` il faudra se reconnecter.
+J'ai changé les mots de passe en « raspberry ». Il s'agit d'un laboratoire, évitez d'utiliser vos vrais mots de passe dans le cluster. Une fois le mot de passe changé le raspberry effectuera un `reboot` il faudra se reconnecter.
 
 
 Mettez sous tension un seul Raspberry à la fois, configurez son réseau, son nom d'hôte, ses hôtes et son utilisateur et baissez-le. Cela facilitera l'identification de l'IP dynamique pour la connexion initiale avec ssh.
@@ -251,7 +252,7 @@ Vous trouverez utile d'installer le paquet net-tools ! Il est livré avec *netst
 
 ### 2.5 accès au bureau à distance
 
-J'ai égalemebt installé une interface graphique légère (xfce4) avec un navigateur Web (chromium) et un accès au bureau à distance (xrdp). 
+J'ai également installé une interface graphique légère (xfce4) avec un navigateur Web (chromium) et un accès au bureau à distance (xrdp). 
 
 Dans mon cas, ce n'est pas nécessaire car je me connecte via *ssh* et que je fais tout via un terminal. Mais il arrive qu'il soit nécessaire de brancher un clavier, une souris et un écran.
 
@@ -265,15 +266,15 @@ Installez xfce4 et xrdp :
      sudo apt-get install xfce4
      sudo apt-get install xrdp
      
-créez le fichier  /home/pi/.xsession
+créez le fichier : `/home/pi/.xsession`
 
     echo xfce4-session > /home/pi/.xsession
 
-et modifiez le fichier /etc/xrdp/startwm.sh
+et modifiez le fichier : `/etc/xrdp/startwm.sh`
 
     sudo nano /etc/xrdp/startwm.sh
     
-en ajoutant ce qui suit à la fin :
+en ajoutant ce qui suit à la fin du fichier :
 
     startxfce4
     
@@ -292,10 +293,11 @@ Juste au cas où, installez le support extFat  :
 
 ### 2.6 Configuration du hostname et des hosts
 
-Vous devez mettre à jour le nom d'hôte et aussi les fichiers hôtes dans /etc. Voir les exemples dans GitHub.
-Note - supprimer du fichier hôte la référence à localhost 127.0.01.
+Vous devez mettre à jour le fihiers `hostname` et aussi le fichier `hosts` dans /etc. 
 
-/etc/hosts
+Note - supprimer du fichier `hosts` la référence à localhost 127.0.01.
+
+`/etc/hosts`
 
     # The following lines are desirable for IPv6 capable hosts
     ::1 ip6-localhost ip6-loopback
@@ -311,7 +313,7 @@ Note - supprimer du fichier hôte la référence à localhost 127.0.01.
     192.168.0.116 pi-node16
 
 
-/etc/hostname
+`/etc/hostname`
 
     pi-node13
 
@@ -358,7 +360,7 @@ Modifier le fichier  : home/pi/.ssh/config pour créer des raccourcis pour ssh
 
 Générer une paire de clés rsa publiques/privées pour l'utilisateur pi dans tous les nœuds du cluster :
 
-Example de Commandes et sorties attendues :
+Exemple de Commandes et sorties attendues :
 
     pi@pi-node13:~$  ssh-keygen -t rsa
     Generating public/private rsa key pair.
@@ -430,7 +432,7 @@ Créez des fonctions pour vous aider dans la gestion du cluster, en ajoutant ce 
       done
     }
 
-exécutez la commande :
+Exécutez la commande :
 
 `source /home/pi/.bashrc`
 
