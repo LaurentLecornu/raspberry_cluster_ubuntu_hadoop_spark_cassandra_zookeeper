@@ -25,7 +25,7 @@ En raison de la taille et pour des raisons pédagogiques, j'ai également divis�
 
 *Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer toutes mes sources. Étant donné que différentes versions de logiciels peuvent se comporter de manière distincte en raison de leurs dépendances, je vous suggère d'utiliser les mêmes versions que celles que j'ai utilisées lors de votre premier essai.*
 
-## 1. Introduction
+# 1. Introduction
 
 L'objectif est de reproduire dans un cadre pédagogique et à un coût limité des cluster big data.
 
@@ -41,17 +41,17 @@ Puis j'ai décidé d'ajouter des Raspberry Pi 4 ce qui m'a permis d'inclure d'au
 
 Le résultat fonctionne et sa performance me permet de mener des TPs. 
 
-## 2. Assemblage du cluster
+# 2. Assemblage du cluster
 
 Cette première partie vous guidera dans l'assemblage du cluster physique, l'installation du serveur Ubuntu 20.04 et la configuration de l'environnement pour le cluster. 
 
-### 2.1 De quoi avez-vous besoin ?
+## 2.1 De quoi avez-vous besoin ?
 
 Nous avons monté 2 clusters un premier de base avec 4 raspberry pi 3 remplacé par des raspberry pi 4 et un plus grand cluster composé de 22 raspberry pi 4 et de 10 raspberry pi 3.
 
 Nous donnerons les explications pour le cluster composé de 4 raspberry pi 4. 
 
-### 2.1.1 Matériel utilisé
+## 2.1.1 Matériel utilisé
 
 * Cluster de base 
 
@@ -80,7 +80,7 @@ Nous donnerons les explications pour le cluster composé de 4 raspberry pi 4.
 
 
 
-#### 2.1.2 Quelques explications sur le matériel :
+### 2.1.2 Quelques explications sur le matériel :
 
 Le Raspberry Pi 4 dispose du wifi et d'un Ethernet gigabit. J'ai opté par un réseau câblé pour la communication en cluster, en utilisant le commutateur gigabit. J'utilise également le wifi pour l'accès à distance. Ainsi, vous devriez utiliser des câbles cat 6.
 
@@ -103,12 +103,12 @@ Afin de vous aider lors de la lecture de ce tutoriel, vous retrouverez les diff�
 
 Tous les fichiers sont dans la version finale, avec des versions distribuées de Hadoop, Spark.
 
-### 2.2 Montage du cluster
+## 2.2 Montage du cluster
 
 La première étape consiste au montage des boitiers avec les raspberry, de relier les alimentations, les câbles réseaux.
  
 
-### 2.3 Installation d'un système opérationnel
+## 2.3 Installation d'un système opérationnel
 
 Tout d'abord, vous devez assembler les éléments physiques dans le support du cluster, moins les cartes SD. 
 
@@ -116,7 +116,7 @@ Tout d'abord, vous devez assembler les éléments physiques dans le support du c
 Mon ordinateur portable fonctionne sous mac os X - et j'utilise régulièrement le terminal et brew ou apt-get. 
 
 
-#### 2.3.1 Télécharger et installer l'imageur Raspberry Pi
+### 2.3.1 Télécharger et installer l'imageur Raspberry Pi
 
 Le meilleur outil pour créer la carte micro SD avec le serveur Ubuntu est le [Raspberry Pi Imager](https://www.raspberrypi.org/software/) [5]. L'outil est disponible pour Windows, Ubuntu et Mac.
 
@@ -138,7 +138,7 @@ Faites de même pour toutes vos cartes PI Micro SD (pour les raspberry pi 4)
 Le serveur Ubuntu 20.04 est disponible en version minimale, configuré pour connecter le réseau Ethernet par DHCP.
 
 
-#### 2.3.2 Connexion au réseau
+### 2.3.2 Connexion au réseau
 
 Il s'agit d'un cluster - le réseau est primordial. Tout ce tutoriel suppose que vous avez un réseau domestique avec un routeur ou une passerelle.
 
@@ -170,7 +170,7 @@ Mettez sous tension un seul Raspberry à la fois, configurez son réseau, son no
 Lorsque vous mettez un Pi 4 sous tension, vous verrez une LED rouge et verte clignoter près du micro SD. La LED rouge est alimentée et le vert montre qu'il accède à votre mémoire secondaire (le micro SD).
 Tous mes Pi ont la même configuration pour l'emplacement de l'utilisateur/mot de passe et des fichiers. Cela facilite la gestion du cluster.
 
-#### 2.3.3 La première tâche consiste à configurer votre réseau.
+### 2.3.3 La première tâche consiste à configurer votre réseau.
 
 Comme je l'ai écrit précédemment, j'ai décidé de configurer Ethernet. 
 
@@ -221,7 +221,7 @@ Une fois que vous avez des connexions réseau stables, vous pouvez démarrer la 
 
 
 
-### 2.4 Créez vos utilisateurs
+## 2.4 Créez vos utilisateurs
 
 Vous allez créer le même utilisateur dans tous les nœuds, avec un accès sudo :
 
@@ -246,7 +246,7 @@ Vous trouverez utile d'installer le paquet net-tools ! Il est livré avec *netst
     sudo apt install python3 python-is-python3
     sudo apt install python3-pip
 
-### 2.5 accès au bureau à distance
+## 2.5 accès au bureau à distance
 
 J'ai également installé une interface graphique légère (xfce4) avec un navigateur Web (chromium) et un accès au bureau à distance (xrdp). 
 
@@ -287,7 +287,7 @@ Juste au cas où, installez le support extFat  :
     sudo apt install exfat-fuse
     
 
-### 2.6 Configuration du hostname et des hosts
+## 2.6 Configuration du hostname et des hosts
 
 Vous devez mettre à jour le fihiers `hostname` et aussi le fichier `hosts` dans /etc. 
 
@@ -313,7 +313,7 @@ Note - supprimer du fichier `hosts` la référence à localhost 127.0.01.
 
     pi-node13
 
-### 2.7 Installation de Java
+## 2.7 Installation de Java
 
 C'était un talon d'Achille :
 Hadoop est compilé et fonctionne bien sur Java8. 
@@ -333,7 +333,7 @@ Voici ma version :
     OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode)
 
 
-### 2.8 Configuration de SSH
+## 2.8 Configuration de SSH
 
 Modifier le fichier  : home/pi/.ssh/config pour créer des raccourcis pour ssh
 
@@ -392,7 +392,7 @@ Et copiez sur tous les nœuds :
 Remarque - vous devez effectuer ce processus dans chaque nœud de cluster. En fin de compte, tous les nœuds auront toutes les clés publiques dans leurs listes. C'est important - ne pas avoir la clé ce qui empêcherait la communication de machine à machine après.
 
 
-### 2.9 Scripts pour gérer le cluster
+## 2.9 Scripts pour gérer le cluster
 
 Créez des fonctions pour vous aider dans la gestion du cluster, en ajoutant ce qui suit dans le fichier suivant :
 
@@ -435,7 +435,7 @@ Exécutez la commande :
 
 Vous devez le faire dans tous les nœuds. Utilisez *scp* pour copier entre les nœuds si vous préférez.
 
-### 2.10 Synchronisation de l'heure
+## 2.10 Synchronisation de l'heure
 
 Habituellement, je synchronise toutes mes machines avec un serveur de temps en UTC. Dans un cluster, c'est encore plus important.
 
