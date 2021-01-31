@@ -4,18 +4,16 @@ Ce texte est inspiré en grande partie par celui de Pier Tarandi [[1]](https://t
 
 
 
-Assemblage d'un cluster Raspberry Pi 4 avec Hadoop, Spark.
+On présentera ici l'assemblage et le réglage d'un cluster Raspberry Pi 4 avec Hadoop, Spark, Zookeeper, Kafka
 
-
-
-Le texte suppose que vous connaissez et savez utiliser les commandes en ligne sous linux, y compris ssh, vim et nano.
+Ce document utilise des commandes en ligne sous linux tel que ssh et nano.
 
 Cette installation a été réalisé à partir d'un mac en utilisant une connexion ssh vers les différents raspberry pi.
 
 Il est conseillé de posséder un cluster d'au moins de trois raspberry car vous devez définir une communication entre divers éléments.
 
 
-En raison de la taille et pour des raisons pédagogiques, j'ai également divisé ce tutoriel en 3 parties.
+En raison de la taille et pour des raisons pédagogiques, j'ai divisé pour l'instant ce tutoriel en 3 parties.
 
 * Partie 1 : Introduction, système opérationnel et mise en réseau (mise en place et réglage du cluster)
 * Partie 2 : Hadoop et Spark
@@ -35,7 +33,7 @@ L'environnement Big Data nécessite une solution distribuée dans le monde réel
 
 Le nouveau Raspberry Pi 4 est disponible jusqu'à 8 Go de RAM. Ce n'est pas une Ferrari, mais il me parait suffisant pour une exploitation dans un cadre pédagogique. 
 
-J'ai lu quelques textes sur la façon d'assembler des clusters avec Raspberry, pour la solution Hadoop + Spark - et j'ai commencé avec un cluster de raspberry pi 3. Celui-ci était un peu limité.
+Après lecture de quelques textes sur la façon d'assembler des clusters avec Raspberry, pour la solution Hadoop + Spark - et j'ai commencé avec un cluster de raspberry pi 3. Celui-ci était un peu limité.
 
 Puis j'ai décidé d'ajouter des Raspberry Pi 4 ce qui m'a permis d'inclure d'autre modules comme spark, cassandra...
 
@@ -47,7 +45,7 @@ Cette première partie vous guidera dans l'assemblage du cluster physique, l'ins
 
 ## 2.1 De quoi avez-vous besoin ?
 
-Nous avons monté 2 clusters un premier de base avec 4 raspberry pi 3 remplacé par des raspberry pi 4 et un plus grand cluster composé de 22 raspberry pi 4 et de 10 raspberry pi 3.
+Nous avons monté 2 clusters : un premier de base avec 4 raspberry pi 3 (remplacés par la suite par des raspberry pi 4) et un plus grand cluster composé de 22 raspberry pi 4 et de 10 raspberry pi 3.
 
 Nous donnerons les explications pour le cluster composé de 4 raspberry pi 4. 
 
@@ -64,7 +62,7 @@ Nous donnerons les explications pour le cluster composé de 4 raspberry pi 4.
 	* 1 MakerFun pour Raspberry Pi 4 Model B + Boîtier avec Ventilateur et radiateur en Acrylique en Couches superposables
 	* 2 multiprises 5 prises (seuls 3 chargeurs peuvent être branchés par multiprise) avec un bouton on/off
 
-* Cluster mixte
+* Cluster étendu
 
 	* 22 Raspberry Pi 4 4 Go 
 	* 10 Raspberry Pi 3 1 Go
@@ -461,7 +459,7 @@ Cette dernière commande utilise la date *htpdate* pour synchroniser les horloge
 
 [3] W. H. Liang. [Build Raspberry Pi Hadoop/Spark Cluster from scratch (2019)](https://medium.com/analytics-vidhya/build-raspberry-pi-hadoop-spark-cluster-from-scratch-c2fa056138e0), consulté le 27/01/2021
 
-[4]J. Widriksson. [Raspberry PI Hadoop Cluster](http://www.widriksson.com/raspberry-pi-hadoop-cluster/) (2014), consulté le 27/01/2021
+[4] J. Widriksson. [Raspberry PI Hadoop Cluster](http://www.widriksson.com/raspberry-pi-hadoop-cluster/) (2014), consulté le 27/01/2021
 
 
 [5] A. Ajisaka. [Hadoop Java Versions](https://cwiki.apache.org/confluence/display/HADOOP/Hadoop+Java+Versions) (2020), consulté le 27/01/2021
