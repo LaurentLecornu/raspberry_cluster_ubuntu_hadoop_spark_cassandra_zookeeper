@@ -1,20 +1,21 @@
-# Partie 4/4 : Kafka et Zookeeper sur Ubuntu dans un cluster à 4 nœuds
+# Partie 3/3 : Kafka et Zookeeper sur Ubuntu dans un cluster à 4 nœuds
+
+Modifié le : 31/01/2021
 
 Ce texte est inspiré en grande partie par celui de Pier Tarandi [[1]](https://towardsdatascience.com/kafka-and-zookeeper-over-ubuntu-in-a-3-node-cluster-a-data-science-big-data-laboratory-part-4-of-4-47631730d240)
 
 
 
-Assemblage d'un cluster Raspberry Pi 4 avec Hadoop, Spark.
+On présentera ici l'assemblage et le réglage d'un cluster Raspberry Pi 4 avec Hadoop, Spark, Zookeeper, Kafka
 
-
-Le texte suppose que vous connaissez et savez utiliser les commandes en ligne sous linux, y compris ssh, vim et nano.
+Ce document utilise des commandes en ligne sous linux tel que ssh et nano.
 
 Cette installation a été réalisé à partir d'un mac en utilisant une connexion ssh vers les différents raspberry pi.
 
 Il est conseillé de posséder un cluster d'au moins de trois raspberry car vous devez définir une communication entre divers éléments.
 
+En raison de la taille et pour des raisons pédagogiques, j'ai divisé pour l'instant ce tutoriel en trois parties.
 
-En raison de la taille et pour des raisons pédagogiques, j'ai également diviser ce tutoriel en deux parties.
 
 * Partie 1 : Introduction, système opérationnel et mise en réseau (mise en place et réglage du cluster)
 * Partie 2 : Hadoop et Spark
@@ -24,7 +25,7 @@ Tous les fichiers de configuration utilisés seront disponibles à l'adresse [2]
 
 *Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer toutes mes sources. Étant donné que différentes versions de logiciels peuvent se comporter de manière distincte en raison de leurs dépendances, je vous suggère d'utiliser les mêmes versions que celles que j'ai utilisées lors de votre premier essai.*
 
-##6. Kafka
+# 6. Kafka
 
 Kafka (https://kafka.apache.org/) est un broker de messages robuste largement utilisé pour instancier des pipelines. Sa fonctionnalité de rétention permet de gérer une vague d'informations ou la nécessité de mettre les consumers hors ligne pour maintenance.
 
@@ -36,7 +37,7 @@ Un grand merci à Confluent !
 
 Kafka peut facilement gérer de gigaoctets à même pétaoctets par jour. C'est loin d'être ma capacité de ce cluster. Cependant, j'ai décidé d'installer Kafka initialement en tant que nœud unique et de l'avoir distribué pour permettre de jouer avec les pipelines de données, comme la collecte d'informations en temps réel à partir de Tweeter.
 
-###6.1 Zookeeper
+## 6.1 Zookeeper
 
 La première étape consiste à installer le serveur zookeeper puisque Kafka en dépend pour la distribution des métadonnées. J'ai installé la version stable la plus récente disponible sur les sites suivants :
 > https://zookeeper.apache.org/releases.html
@@ -86,7 +87,7 @@ sudo netstat -plnt | grep 2181
 
 Maintenant, nous avons zookeeper qui fonctionne localement sur pi-node13. Ensuite, nous pouvons installer Kafka.
 
-### 6.2 KAFKA
+## 6.2 KAFKA
 
 L'installation de Kafka sur un seul nœud n'est pas si gênante. 
 
@@ -158,7 +159,7 @@ Les commandes suivantes vous permettront de vous assurer que Kafka fonctionne co
         ^CProcessed a total of 2 messages
 
 
-### 6.3 Changement de Zookeeper et de Kafka en mode cluster
+## 6.3 Changement de Zookeeper et de Kafka en mode cluster
 Attention : Kafka et Zookeeper suggèrent que vous avez un nombre impair de nœuds. Je les utilise, c'est correct.
 
 * **pi-node14**
@@ -263,7 +264,7 @@ et :
 Maintenant, Zookeeper et Kafka fonctionneront en cluster. Vous devez le démarrer dans tous les nœuds.
 
 
-## 7. Démarrage du cluster
+# 7. Démarrage du cluster
 
 J'ai codé un script pour chaque nœud, pour démarrer tous les services - parce que j'oublie parfois de démarrer des services spécifiques. Vous trouverez les scripts dans le dossier d'accueil de l'utilisateur pi sous le nom de cluster-start.sh. 
 
