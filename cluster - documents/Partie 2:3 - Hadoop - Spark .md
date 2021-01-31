@@ -1,21 +1,20 @@
 # Partie 2/3 : Hadoop 3.2.2 et Spark 3.0.1 sur Ubuntu 20.04 dans un cluster à 4 nœuds
 
+Modifié le : 31/01/2021
 
 Ce texte est inspiré en grande partie par celui de Pier Tarandi [[1]](https://towardsdatascience.com/assembling-a-personal-data-science-big-data-laboratory-in-a-raspberry-pi-4-or-vms-cluster-e4c5a0473025)
 
 
+On présentera ici l'assemblage et le réglage d'un cluster Raspberry Pi 4 avec Hadoop, Spark, Zookeeper, Kafka
 
-Assemblage d'un cluster Raspberry Pi 4 avec Hadoop, Spark.
-
-
-Le texte suppose que vous connaissez et savez utiliser les commandes en ligne sous linux, y compris ssh, vim et nano.
+Ce document utilise des commandes en ligne sous linux tel que ssh et nano.
 
 Cette installation a été réalisé à partir d'un mac en utilisant une connexion ssh vers les différents raspberry pi.
 
 Il est conseillé de posséder un cluster d'au moins de trois raspberry car vous devez définir une communication entre divers éléments.
 
 
-En raison de la taille et pour des raisons pédagogiques, j'ai également diviser ce tutoriel en deux parties.
+En raison de la taille et pour des raisons pédagogiques, j'ai divisé pour l'instant ce tutoriel en trois parties.
 
 * Partie 1 : Introduction, système opérationnel et mise en réseau (mise en place et réglage du cluster)
 * Partie 2 : Hadoop et Spark
@@ -23,7 +22,7 @@ En raison de la taille et pour des raisons pédagogiques, j'ai également divise
 
 Tous les fichiers de configuration utilisés seront disponibles à l'adresse [2].
 
-*Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer toutes mes sources. Étant donné que différentes versions de logiciels peuvent se comporter de manière distincte en raison de leurs dépendances, je vous suggère d'utiliser les mêmes versions que celles que j'ai utilisées lors de votre premier essai.*
+*Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer toutes mes sources. Étant donné que différentes versions de logiciels peuvent se comporter de manière distincte en raison de leurs dépendances, je vous suggère d'utiliser les mêmes versions que celles que j'ai utilisées.*
 
 ## 3. Installation de Hadoop et Spark
 L'installation Hadoop et Spark a suivi les instructions de [3, 4].
@@ -32,23 +31,32 @@ J'ai utilisé les versions suivantes du site Web d'Apache :
 
     hadoop-3.2.2.tar.gz
     spark-3.0.1-bin-hadoop3.0.tgz
+    
+Il vous faudra aller vérifier sur le site de spark et hadoop les numéros des dernières versions disponibles et utiliser les dernières versions.
+
+Attention : seules les versions indiquées dans ce document ont été installées et testées.
 
 ### 3.1 Définir votre environnement
 
 Tout d'abord : téléchargez et extrayez les fichiers dans */opt*. Donner accès à l'utilisateur *pi*.
 
-    pi@pi-node13:~$ wget https://downloads.apache.org/spark/spark-3.0.1/spark-3.0.1-bin-hadoop3.2.tgz
-    pi@pi-node13:~$ wget https://mirror.ibcp.fr/pub/apache/hadoop/common/hadoop-3.2.2/hadoop-3.2.2.tar.gz
-    pi@pi-node13:~$ sudo tar -xvf hadoop-3.2.2.tar.gz -C /opt/
-    pi@pi-node13:~$ sudo tar -xvf spark-3.0.1-bin-hadoop3.2.tgz  -C /opt/
+Pour des raisons de simplicité, renommez vos répertoires :
 
-    pi@pi-node13:~$ cd /opt/
-    pi@pi-node13:~$ sudo mv hadoop-3.2.2 hadoop
-    pi@pi-node13:~$ sudo mv spark-3.0.1-bin-hadoop3.2 spark
-    pi@pi-node13:~$ sudo chown -R pi:pi /opt/spark
-    pi@pi-node13:~$ sudo chown -R pi:pi /opt/hadoop
+- hadoop-3.2.2 devient hadoop
+- spark-3.0.1-bin-hadoop3.2 devient spark
+
+        pi@pi-node13:~$ wget https://downloads.apache.org/spark/spark-3.0.1/spark-3.0.1-bin-hadoop3.2.tgz
+        pi@pi-node13:~$ wget https://mirror.ibcp.fr/pub/apache/hadoop/common/hadoop-3.2.2/hadoop-3.2.2.tar.gz
+        pi@pi-node13:~$ sudo tar -xvf hadoop-3.2.2.tar.gz -C /opt/
+        pi@pi-node13:~$ sudo tar -xvf spark-3.0.1-bin-hadoop3.2.tgz  -C /opt/
+
+        pi@pi-node13:~$ cd /opt/
+        pi@pi-node13:~$ sudo mv hadoop-3.2.2 hadoop
+        pi@pi-node13:~$ sudo mv spark-3.0.1-bin-hadoop3.2 spark
+        pi@pi-node13:~$ sudo chown -R pi:pi /opt/spark
+        pi@pi-node13:~$ sudo chown -R pi:pi /opt/hadoop
    
-ajouter à /home/pi/.bashrc :
+ajouter à `/home/pi/.bashrc` :
 
     ##  path for hadoop and spark
 
@@ -78,7 +86,7 @@ Dans un premier temps, on configurera un seul nœud puis on passera à un cluste
 
 Aller au dossier
 
-/opt/hadoop/etc/hadoop
+`/opt/hadoop/etc/hadoop`
 
 
 * Modifier le fichier `/opt/hadoop/etc/hadoop/hadoop-env.sh`,

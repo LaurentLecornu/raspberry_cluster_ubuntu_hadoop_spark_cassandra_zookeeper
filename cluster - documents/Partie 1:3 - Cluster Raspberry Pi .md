@@ -1,5 +1,7 @@
 # Partie 1/3 : Cluster Raspberry Pi 
 
+Modifié le : 31/01/2021
+
 Ce texte est inspiré en grande partie par celui de Pier Tarandi [[1]](https://towardsdatascience.com/assembling-a-personal-data-science-big-data-laboratory-in-a-raspberry-pi-4-or-vms-cluster-ff37759cb2ec)
 
 
@@ -21,7 +23,7 @@ En raison de la taille et pour des raisons pédagogiques, j'ai divisé pour l'in
 
 
 
-*Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer toutes mes sources. Étant donné que différentes versions de logiciels peuvent se comporter de manière distincte en raison de leurs dépendances, je vous suggère d'utiliser les mêmes versions que celles que j'ai utilisées lors de votre premier essai.*
+*Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer toutes mes sources. Étant donné que différentes versions de logiciels peuvent se comporter de manière distincte en raison de leurs dépendances, je vous suggère d'utiliser les mêmes versions que celles que j'ai utilisées.*
 
 # 1. Introduction
 
@@ -213,7 +215,7 @@ Vous devez adapter le fichier à votre environnement. Habituellement, il vous su
 | pi-node15 | 192.168.0.115 |
 | pi-node16 | 192.168.0.116 |
 
-Remarque - assurez-vous de supprimer la plage que vous avez choisie de la plage que votre routeur peut utiliser pour les connexions DHCP.
+Remarque - assurez-vous de supprimer la plage que vous avez choisie de la plage que votre routeur peut utiliser pour les connexions DHCP ou bien assurer que votre routeur à réserver le couple ip/nom d'hôte.
 
 Une fois que vous avez des connexions réseau stables, vous pouvez démarrer la configuration réelle. Gardez à l'esprit que le cluster utilise des connexions réseau, les droits d'accès doivent être tous corrects entre les raspberry, sinon vos services distribués échoueront.
 
@@ -225,8 +227,7 @@ Vous allez créer le même utilisateur dans tous les nœuds, avec un accès sudo
 
 Remarque - n'utilisez pas la commande useradd de bas niveau !
 
-`sudo adduser pi`
-
+	sudo adduser pi
 
     sudo usermod -aG sudo pi
     sudo usermod -aG admin pi
@@ -237,6 +238,30 @@ Connectez-vous en tant que pi et mettez à jour votre système !
 
     sudo apt update
     sudo apt upgrade
+    
+ Lors de l'upgrade, l'erreur suivante peut apparaître. Pour y remédier, suivez le processus indiqué ci dessous.
+    
+    pi@ubuntu:~$ sudo apt upgrade
+    Waiting for cache lock: Could not get lock /var/lib/dpkg/lock-frontend. It is held by process 3180 (unattended-upgr)      
+    ^Citing for cache lock: Could not get lock /var/lib/dpkg/lock-frontend. It is held by process 3180 (unattended-upgr)... 1s
+
+    pi@ubuntu:~$ sudo fuser -v /var/lib/dpkg/lock-frontend
+                     USER        PID ACCESS COMMAND
+    /var/lib/dpkg/lock-frontend:
+                     root       3180 F.... unattended-upgr
+    pi@ubuntu:~$ sudo kill -KILL 3180
+    pi@ubuntu:~$ sudo apt install -f
+    Reading package lists... Done
+    Building dependency tree... 50%. 
+    Building dependency tree       
+    Reading state information... Done
+    0 upgraded, 0 newly installed, 0 to remove and 125 not upgraded.
+    pi@ubuntu:~$ sudo dpkg --configure -a
+    pi@ubuntu:~$ sudo apt upgrade
+
+Pour effectuer une mise à jour plus complète :
+
+    sudo apt full-upgrade
 
 Vous trouverez utile d'installer le paquet net-tools ! Il est livré avec *netstat*, et nous l'utiliserons après l'utiliser pour vérifier les services actifs (ports) dans les nœuds :
 
@@ -384,8 +409,8 @@ Copiez les clés publiques dans la liste des clés autorisées :
 
 Et copiez sur tous les nœuds :
 
-`cat ~/.ssh/id_rsa.pub | ssh pi2 'cat >> .ssh/authorized_keys'`
-`cat ~/.ssh/id_rsa.pub | ssh pi3 'cat >> .ssh/authorized_keys'`
+    cat ~/.ssh/id_rsa.pub | ssh pi2 'cat >> .ssh/authorized_keys'
+    cat ~/.ssh/id_rsa.pub | ssh pi3 'cat >> .ssh/authorized_keys'
 
 Remarque - vous devez effectuer ce processus dans chaque nœud de cluster. En fin de compte, tous les nœuds auront toutes les clés publiques dans leurs listes. C'est important - ne pas avoir la clé ce qui empêcherait la communication de machine à machine après.
 
