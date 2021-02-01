@@ -24,7 +24,7 @@ Tous les fichiers de configuration utilisés seront disponibles à l'adresse [2]
 
 *Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer toutes mes sources. Étant donné que différentes versions de logiciels peuvent se comporter de manière distincte en raison de leurs dépendances, je vous suggère d'utiliser les mêmes versions que celles que j'ai utilisées.*
 
-## 3. Installation de Hadoop et Spark
+# 3. Installation de Hadoop et Spark
 L'installation Hadoop et Spark a suivi les instructions de [3, 4].
 
 J'ai utilisé les versions suivantes du site Web d'Apache :
@@ -36,7 +36,7 @@ Il vous faudra aller vérifier sur le site de spark et hadoop les numéros des d
 
 Attention : seules les versions indiquées dans ce document ont été installées et testées.
 
-### 3.1 Définir votre environnement
+## 3.1 Définir votre environnement
 
 Tout d'abord : téléchargez et extrayez les fichiers dans */opt*. Donner accès à l'utilisateur *pi*.
 
@@ -45,16 +45,16 @@ Pour des raisons de simplicité, renommez vos répertoires :
 - hadoop-3.2.2 devient hadoop
 - spark-3.0.1-bin-hadoop3.2 devient spark
 
-        pi@pi-node13:~$ wget https://downloads.apache.org/spark/spark-3.0.1/spark-3.0.1-bin-hadoop3.2.tgz
-        pi@pi-node13:~$ wget https://mirror.ibcp.fr/pub/apache/hadoop/common/hadoop-3.2.2/hadoop-3.2.2.tar.gz
-        pi@pi-node13:~$ sudo tar -xvf hadoop-3.2.2.tar.gz -C /opt/
-        pi@pi-node13:~$ sudo tar -xvf spark-3.0.1-bin-hadoop3.2.tgz  -C /opt/
+        pi@pi-node29:~$ wget https://downloads.apache.org/spark/spark-3.0.1/spark-3.0.1-bin-hadoop3.2.tgz
+        pi@pi-node29:~$ wget https://mirror.ibcp.fr/pub/apache/hadoop/common/hadoop-3.2.2/hadoop-3.2.2.tar.gz
+        pi@pi-node29:~$ sudo tar -xvf hadoop-3.2.2.tar.gz -C /opt/
+        pi@pi-node29:~$ sudo tar -xvf spark-3.0.1-bin-hadoop3.2.tgz  -C /opt/
 
-        pi@pi-node13:~$ cd /opt/
-        pi@pi-node13:~$ sudo mv hadoop-3.2.2 hadoop
-        pi@pi-node13:~$ sudo mv spark-3.0.1-bin-hadoop3.2 spark
-        pi@pi-node13:~$ sudo chown -R pi:pi /opt/spark
-        pi@pi-node13:~$ sudo chown -R pi:pi /opt/hadoop
+        pi@pi-node29:~$ cd /opt/
+        pi@pi-node29:~$ sudo mv hadoop-3.2.2 hadoop
+        pi@pi-node29:~$ sudo mv spark-3.0.1-bin-hadoop3.2 spark
+        pi@pi-node29:~$ sudo chown -R pi:pi /opt/spark
+        pi@pi-node29:~$ sudo chown -R pi:pi /opt/hadoop
    
 ajouter à `/home/pi/.bashrc` :
 
@@ -76,13 +76,13 @@ Après édition :
 
 `source /home/pi/.bashrc`
 
-### 3.2 Configuration de Hadoop et de spark sur un seul nœud
+## 3.2 Configuration de Hadoop et de spark sur un seul nœud
 
 Maintenant, vous devez configurer Hadoop et Spark.
 
 Dans un premier temps, on configurera un seul nœud puis on passera à un cluster.
 
-#### 3.2.1 Hadoop
+### 3.2.1 Hadoop
 
 Aller au dossier
 
@@ -126,19 +126,19 @@ remplacer `pi-nodeXX` par votre nœud.
 
 * Préparez maintenant les répertoires suivants :
 
-        pi@pi-node13:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/datanode
-        pi@pi-node13:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/namenode
+        pi@pi-node29:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/datanode
+        pi@pi-node29:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/namenode
     
-        pi@pi-node13:~$ sudo chown -R pi:pi /opt/hadoop_tmp
+        pi@pi-node29:~$ sudo chown -R pi:pi /opt/hadoop_tmp
 
 Si les répertoires sont déjà créés. Je conseille un grand nettoyage et la re-création des répertoires.
 
         $ rm –rf /opt/hadoop_tmp/hdfs/*
         
-        pi@pi-node13:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/datanode
-        pi@pi-node13:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/namenode
+        pi@pi-node29:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/datanode
+        pi@pi-node29:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/namenode
     
-        pi@pi-node13:~$ sudo chown -R pi:pi /opt/hadoop_tmp
+        pi@pi-node29:~$ sudo chown -R pi:pi /opt/hadoop_tmp
 
 
 
@@ -174,11 +174,11 @@ Il n'y pas de fichier `master`.
 
 * Préparer l'espace de données :
 
-        pi@pi-node13:~$  hdfs namenode -format -force
-        pi@pi-node13:~$  start-dfs.sh
-        pi@pi-node13:~$  start-yarn.sh
-        pi@pi-node13:~$  hadoop fs -mkdir /tmp
-        pi@pi-node13:~$  hadoop fs -ls /
+        pi@pi-node29:~$  hdfs namenode -format -force
+        pi@pi-node29:~$  start-dfs.sh
+        pi@pi-node29:~$  start-yarn.sh
+        pi@pi-node29:~$  hadoop fs -mkdir /tmp
+        pi@pi-node29:~$  hadoop fs -ls /
         Found 1 items
         drwzr-xr-x - pi supergroup 0 2019-04-09 16:51 /tmp
         
@@ -193,19 +193,19 @@ Utilisez *jps* pour vérifier si tous les services sont activés (les chiffres c
     
 Vous avez besoin de ces cinq services !
 
-#### 3.2.2 Essais
+### 3.2.2 Essais
 Pour tester le nœud unique, je me réfère au tutoriel [2] :
 
 Exécutez les commandes suivantes :
 
 On commence par copier un fichier 
 
-    pi@pi-node13:~$ hadoop fs -put $SPARK_HOME/README.md /
+    pi@pi-node29:~$ hadoop fs -put $SPARK_HOME/README.md /
     2021-01-23 20:45:30,726 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
 
 Puis on lance spark-shell
 
-    pi@pi-node13:~$ spark-shell
+    pi@pi-node29:~$ spark-shell
     2021-01-24 11:35:04,929 WARN util.NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
     Setting default log level to "WARN".
     To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
@@ -224,7 +224,7 @@ Puis on lance spark-shell
     Type :help for more information.
 
     scala> val textFile = sc.textFile("hdfs://pi-nodeXX:9000/README.md")
-    textFile: org.apache.spark.rdd.RDD[String] = hdfs://pi-node13:9000/README.md MapPartitionsRDD[3] at textFile at <console>:24
+    textFile: org.apache.spark.rdd.RDD[String] = hdfs://pi-node29:9000/README.md MapPartitionsRDD[3] at textFile at <console>:24
 
     scala> textFile.first()
     res1: String = # Apache Spark                                                   
@@ -250,8 +250,9 @@ Modifiez le fichier, en ajoutant la propriété :
        </description>
     </property>
 
+Vous retrouverez les fichiers de configuration utilisé ([ici](https://github.com/LaurentLecornu/raspberry_cluster_ubuntu_hadoop_spark_cassandra_zookeeper/tree/main/Instructions/opt%20hadoop%20etc%20hadoop))
 
-###3.3 Hadoop dans un cluster avec Yarn
+## 3.3 Hadoop dans un cluster avec Yarn
 
 Maintenant, Il est temps qde créer un cluster Haddop.
 
@@ -271,12 +272,11 @@ Notez que Spark n'existera que dans le maître.
 
 Copier Hadoop :
 
-À partir de pi-node13 :
+À partir de pi-node29 :
 
-     pi@pi1:~$ rsync -vaz /opt/hadoop pi-node14:/opt/hadoop
-     pi@pi1:~$ rsync -vaz /opt/hadoop pi-node15:/opt/hadoop
-     pi@pi1:~$ rsync -vaz /opt/hadoop pi-node16:/opt/ hadoop
-
+     pi@pi-node29:~$ rsync -vaz /opt/hadoop pi-node26:/opt/hadoop
+     pi@pi-node29:~$ rsync -vaz /opt/hadoop pi-node27:/opt/hadoop
+   
 Faites-le pour tous vos nœuds.
 
 
@@ -286,7 +286,7 @@ Maintenant, les fichiers suivants doivent être modifiés, en modifiant la confi
     <configuration>
 	   <property>
 		  <name>fs.default.name</name>
-		  <value>hdfs://pi1:9000</value>
+		  <value>hdfs://pi-node29:9000</value>
 	   </property>
     </configuration>
 
@@ -411,13 +411,12 @@ Si vous le configurez mal, vos applications spark seront bloquées dans le statu
 
 `/opt/hadoop/etc/hadoop/master`
 
-    pi-node13
+    pi-node29
 
 `/opt/hadoop/etc/hadoop/workers`
 
-    pi-node14
-    pi-node15
-    pi-node16
+    pi-node26
+    pi-node27
 
 Après avoir mis à jour les fichiers de configuration à tous les nœuds, il est nécessaire de formater l'espace de données et de démarrer le cluster (vous pouvez commencer à partir de n'importe quel nœud) :
 
@@ -466,10 +465,10 @@ N'oubliez pas d'arrêter votre cluster
     
 ### 3.6 Application Web pour Hadoop et Yarn
 #### 3.6.1 Hadoop webUi
-http://pi-node13:9870/
+http://pi-node29:9870/
 
 
-http://pi-node13:8088/
+http://pi-node29:8088/
 
 
 [1] P. G. Taranti. https://github.com/ptaranti/RaspberryPiCluster
