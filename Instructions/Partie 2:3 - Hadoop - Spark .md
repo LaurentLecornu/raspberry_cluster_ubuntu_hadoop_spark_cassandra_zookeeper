@@ -133,7 +133,7 @@ remplacer `pi-nodeXX` par votre nœud.
 
 Si les répertoires sont déjà créés. Je conseille un grand nettoyage et la re-création des répertoires.
 
-        $ rm –rf /opt/hadoop_tmp/hdfs/*
+        pi@pi-node29:~$ rm -r /opt/hadoop_tmp/hdfs/*
         
         pi@pi-node29:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/datanode
         pi@pi-node29:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/namenode
@@ -235,7 +235,8 @@ N'oubliez pas de remplacer `pi-nodeXX` par votre nœud
 
 j'ai modifié le fichier suivant `/opt/hadoop/etc/hadoop/capacity-scheduler.xml`.
 
-Le paramètre ***yarn.scheduler.capacity.maximum-am-resource-percent*** doit être défini si vous exécutez un cluster sur une seule machine où vous avez moins de ressources. Ce paramètre indique la fraction des ressources qui sont mises à disposition pour être allouées aux maîtres d'application, ce qui augmente le nombre d'applications simultanées possibles. Notez que cela dépend de vos ressources. Cela a fonctionné dans mon Pi 4 4 Go de bélier.
+Le paramètre ***yarn.scheduler.capacity.maximum-am-resource-percent*** doit être défini si vous exécutez un cluster sur une seule machine où vous avez moins de ressources. Ce paramètre indique la fraction des ressources qui sont mises à disposition pour être allouées aux maîtres d'application, ce qui augmente le nombre d'applications simultanées possibles. Notez que cela dépend de vos ressources. 
+
 Modifiez le fichier, en ajoutant la propriété :
 /opt/hadoop/etc/hadoop/capacity-scheduler.xml
 
@@ -265,6 +266,13 @@ Maintenant, Il est temps qde créer un cluster Haddop.
 
 Le prochain supprimera toutes les données de Hadoop. Faites d'abord votre sauvegarde s'il y a quelque chose d'important.
 
+	    pi@pi-node29:~$ rm -r /opt/hadoop_tmp/hdfs/*
+        
+        pi@pi-node29:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/datanode
+        pi@pi-node29:~$ sudo mkdir -p /opt/hadoop_tmp/hdfs/namenode
+    
+        pi@pi-node29:~$ sudo chown -R pi:pi /opt/hadoop_tmp
+
         $ clustercmd rm –rf /opt/hadoop_tmp/hdfs/datanode/*
         $ clustercmd rm –rf /opt/hadoop_tmp/hdfs/namenode/*
         
@@ -274,10 +282,13 @@ Copier Hadoop :
 
 À partir de pi-node29 :
 
-     pi@pi-node29:~$ rsync -vaz /opt/hadoop pi-node26:/opt/hadoop
-     pi@pi-node29:~$ rsync -vaz /opt/hadoop pi-node27:/opt/hadoop
+     pi@pi-node29:~$ rsync -vaz /opt/hadoop pi@pi-node26:/opt
+     pi@pi-node29:~$ rsync -vaz /opt/hadoop pi@pi-node27:/opt
    
-Faites-le pour tous vos nœuds.
+Faites-le pour tous les nœuds devotre cluster. 
+Cette commande permet de copier uniquement les nouveaux fichiers (et ceux qui ont été modifiés).
+
+En général, cette commande est utile car je suis cetain que tous les nœuds du cluster contiennent les mêmes configurations.
 
 
 Maintenant, les fichiers suivants doivent être modifiés, en modifiant la configuration :
@@ -306,7 +317,7 @@ Maintenant, les fichiers suivants doivent être modifiés, en modifiant la confi
 	
 	  <property>
 		 <name>dfs.replication</name>
-		 <value>1</value>
+		 <value>2</value>
 	  </property>
 
 	  <property>
@@ -316,7 +327,7 @@ Maintenant, les fichiers suivants doivent être modifiés, en modifiant la confi
 	
     </configuration>
 
-Note — La propriété ***dfs.replication*** indique le nombre de fois que les données sont répliquées dans le cluster. Vous pouvez configurer pour que toutes les données soient dupliquées sur 2 noeuds ou plus.
+Note — La propriété ***dfs.replication*** indique le nombre de fois que les données sont répliquées dans le cluster. Vous pouvez configurer pour que toutes les données soient dupliquées sur 2 ou 3 noeuds.
 
 Note — La dernière propriété, ***dfs.permissions.enabled***, a été définie sur false pour désactiver la vérification des autorisations. 
 
@@ -377,7 +388,7 @@ Si vous le configurez mal, vos applications spark seront bloquées dans le statu
 
 	<property>
 		<name>yarn.resourcemanager.hostname</name>
-		<value>pi1</value>
+		<value>pi-nodeXX/value>
 	</property>
 
 	<property>
@@ -424,7 +435,7 @@ Après avoir mis à jour les fichiers de configuration à tous les nœuds, il es
     $ start-dfs.sh
     $ start-yarn.sh
 
-### 3.4 Configuration de SPARK
+## 3.4 Configuration de SPARK
 Fondamentalement, vous devez créer/modifier le fichier de configuration suivant :
 `/opt/spark/conf/spark-defaults.conf`
 
