@@ -5,13 +5,13 @@ Modifié le : 1/02/2021
 Ce texte est inspiré en grande partie par celui de Pier Tarandi [[1]](https://towardsdatascience.com/assembling-a-personal-data-science-big-data-laboratory-in-a-raspberry-pi-4-or-vms-cluster-e4c5a0473025)
 
 
-On présentera ici l'assemblage et le réglage d'un cluster Raspberry Pi 4 avec Hadoop, Spark, Zookeeper, Kafka
+On présentera l'assemblage et le réglage d'un cluster Raspberry Pi 4 avec Hadoop, Spark, Zookeeper, Kafka
 
 Ce document utilise des commandes en ligne sous linux tel que ssh et nano.
 
-Cette installation a été réalisé à partir d'un mac en utilisant une connexion ssh vers les différents raspberry pi.
+Cette installation a été réalisée à partir d'un mac en utilisant une connexion ssh vers les différents raspberry pi.
 
-Il est conseillé de posséder un cluster d'au moins de trois raspberry car vous devez définir une communication entre divers éléments.
+Il est conseillé de posséder un cluster d'au moins de trois raspberry pi 4 car vous devez définir une communication entre divers éléments et créer une architecture big data.
 
 
 En raison de la taille et pour des raisons pédagogiques, j'ai divisé pour l'instant ce tutoriel en trois parties.
@@ -22,15 +22,15 @@ En raison de la taille et pour des raisons pédagogiques, j'ai divisé pour l'in
 
 Tous les fichiers de configuration utilisés seront disponibles à l'adresse [2].
 
-*Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer toutes mes sources. Étant donné que différentes versions de logiciels peuvent se comporter de manière distincte en raison de leurs dépendances, je vous suggère d'utiliser les mêmes versions que celles que j'ai utilisées.*
+*Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer toutes mes sources. Étant donné que les versions des logiciels évoluent rapidement, ils avoir un comportement différent de celui attendu en raison de leurs dépendances, je vous suggère donc d'utiliser les mêmes versions que celles que j'ai utilisées. (Puis de les mettre à jour)*
 
 # 3. Installation de Hadoop et Spark
 L'installation Hadoop et Spark a suivi les instructions de [3, 4].
 
 J'ai utilisé les versions suivantes du site Web d'Apache :
 
-    hadoop-3.2.2.tar.gz
-    spark-3.0.1-bin-hadoop3.0.tgz
+    hadoop 3.2.2 
+    spark 3.0.1 pour hadoop 3.0
     
 Il vous faudra aller vérifier sur le site de spark et hadoop les numéros des dernières versions disponibles et utiliser les dernières versions.
 
@@ -72,6 +72,8 @@ ajouter à `/home/pi/.bashrc` :
 
     export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
 
+Attention : la version de java est 8 et le chemin est celui qui est présent sur un raspberry pi 4 et une version d'ubuntu en 64bits (la version en 32bits porte un nom légèrement différent).
+
 Après édition :
 
 `source /home/pi/.bashrc`
@@ -105,7 +107,8 @@ en ajoutant la ligne suivante à la fin :
         </configuration>
 
 
-remplacer `pi-nodeXX` par votre nœud. 
+remplacer `pi-nodeXX` par le nom de votre nœud. 
+
 * Modifier la configuration dans `/opt/hadoop/etc/hadoop/hdfs-site.xml`
 
         <configuration>
@@ -123,6 +126,7 @@ remplacer `pi-nodeXX` par votre nœud.
           </property>
         </configuration> 
 
+n'oublier de remplacer `pi-nodeXX` par le nom de votre nœud.
 
 * Préparez maintenant les répertoires suivants :
 
@@ -251,13 +255,13 @@ Modifiez le fichier, en ajoutant la propriété :
        </description>
     </property>
 
-Vous retrouverez les fichiers de configuration utilisé ([ici](https://github.com/LaurentLecornu/raspberry_cluster_ubuntu_hadoop_spark_cassandra_zookeeper/tree/main/Instructions/opt%20hadoop%20etc%20hadoop))
+Vous retrouverez les fichiers de configuration utilisé ([ici](https://github.com/LaurentLecornu/raspberry_cluster_ubuntu_hadoop_spark_cassandra_zookeeper/tree/main/Instructions))
 
 ## 3.3 Hadoop dans un cluster avec Yarn
 
 Maintenant, Il est temps qde créer un cluster Haddop.
 
-*  Création des dossiers pour tous les nœuds :
+*  Création des dossiers haddop sur tous les nœuds du cluster à l'exception de votre nœud courant :
 
         $ clustercmd-sudo mkdir -p /opt/hadoop_tmp/hdfs
         $ clustercmd-sudo chown -R pi:pi /opt/hadoop_tmp
@@ -276,7 +280,7 @@ Le prochain supprimera toutes les données de Hadoop. Faites d'abord votre sauve
         $ clustercmd rm –rf /opt/hadoop_tmp/hdfs/datanode/*
         $ clustercmd rm –rf /opt/hadoop_tmp/hdfs/namenode/*
         
-Notez que Spark n'existera que dans le maître.
+Notez que Spark n'existera que dans le nœud maître.
 
 Copier Hadoop :
 
@@ -285,7 +289,7 @@ Copier Hadoop :
      pi@pi-node29:~$ rsync -vaz /opt/hadoop pi@pi-node26:/opt
      pi@pi-node29:~$ rsync -vaz /opt/hadoop pi@pi-node27:/opt
    
-Faites-le pour tous les nœuds devotre cluster. 
+Faites-le pour tous les nœuds de votre cluster. 
 Cette commande permet de copier uniquement les nouveaux fichiers (et ceux qui ont été modifiés).
 
 En général, cette commande est utile car je suis cetain que tous les nœuds du cluster contiennent les mêmes configurations.
@@ -332,7 +336,7 @@ Note — La propriété ***dfs.replication*** indique le nombre de fois que les 
 Note — La dernière propriété, ***dfs.permissions.enabled***, a été définie sur false pour désactiver la vérification des autorisations. 
 
 J'ai également désactivé le mode sans échec. Pour ce faire, après avoir terminé l'exécution de l'installation :
-h`dfs dfsadmin -safemode leave`
+`hdfs dfsadmin -safemode leave`
 
 Si vous le configurez mal, vos applications spark seront bloquées dans le statut "accepté", en raison du manque de ressources.
 
@@ -429,18 +433,20 @@ Si vous le configurez mal, vos applications spark seront bloquées dans le statu
     pi-node26
     pi-node27
 
-Après avoir mis à jour les fichiers de configuration à tous les nœuds, il est nécessaire de formater l'espace de données et de démarrer le cluster (vous pouvez commencer à partir de n'importe quel nœud) :
+Après avoir mis à jour les fichiers de configuration à tous les nœuds, grâce à `rsync`, il est nécessaire de faire un grand nettoyage, de formater l'espace de données sur l'un des namenode et de démarrer le cluster (vous pouvez commencer à partir de n'importe quel nœud) :
 
     $ hdfs namenode -format -force
     $ start-dfs.sh
     $ start-yarn.sh
+
+Le formatage s'effectue su votre noeud de départ.
 
 ## 3.4 Configuration de SPARK
 Fondamentalement, vous devez créer/modifier le fichier de configuration suivant :
 `/opt/spark/conf/spark-defaults.conf`
 
     spark.master            yarn
-    spark.driver.memory     2g
+    spark.driver.memory     1536m
     spark.yarn.am.memory    512m
     spark.executor.memory   512m
     spark.executor.cores    2
@@ -463,7 +469,7 @@ Redémarrez tous les nœuds et redémarrez les services :
     $ start-yarn.sh
 Vous pouvez envoyer un exemple d'application pour tester l'étincelle :
 
-    $ spark-submit --deploy-mode client --class org.apache.spark.examples.SparkPi /opt/spark/examples/jars/spark-examples_2.12-3.0.0.jar
+    $ spark-submit --deploy-mode client --class org.apache.spark.examples.SparkPi /opt/spark/examples/jars/spark-examples_2.12-3.0.1.jar
 À la fin du traitement, vous devriez recevoir un calcul approximatif de la valeur PI :
 
     Pi is roughly 3.135715678578393
