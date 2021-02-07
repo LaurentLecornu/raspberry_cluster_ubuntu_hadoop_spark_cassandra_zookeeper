@@ -19,7 +19,7 @@
 - Il sera également présenté des tests ou des exemples d'utilisation.
 
 
-- Le réperoire `Instructions`	détaille les phases de :
+- Le répertoire `Instructions`	détaille les phases de :
 	- configuration du système présent sur les raspberry 
 	- installation du module hadoop avec l'execution quelques tests
 	- installation de spark et l'exécution de quelques tests.
