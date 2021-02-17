@@ -6,7 +6,7 @@
 * Déploiement d’un cluster Spark
 * Test de spark en mode cluster et écoute des ports
 * Récupération du flux de données en streaming dans Spark
-* Intégration d’un flux de données
+	* Intégration d’un flux de données
 
 
 # 2	SPARK
@@ -56,10 +56,12 @@ On peut soit modifier le nom du répertoire, soit mettre un lien symbolique. Voi
 
 ### 2.1.2	Configuration des fichiers
  
-* Configuration du fichier : ~/.bashrc
+* Configuration du fichier : `~/.bashrc` 
 
-		export SPARK_HOME=/opt/spark
-		export PATH=$PATH:$SPARK_HOME/bin
+Ajouter les lignes suivantes :
+
+	export SPARK_HOME=/opt/spark
+	export PATH=$PATH:$SPARK_HOME/bin
 
 et
 
@@ -67,12 +69,12 @@ et
 	export LD_LIBRARY_PATH=$HADOOP_HOME/lib/native:$LD_LIBRARY_PATH
 
 * Configuration du fichier spark-defaults.conf
-*
-Le fichier spark-defaults.conf sera créé et modifié comme suit :
 
-		$ cd /opt/spark/conf
-		$ sudo mv spark-defaults.conf.template spark-defaults.conf
-		$ nano spark-defaults.conf
+Le fichier `spark-defaults.conf` sera créé et modifié comme suit :
+
+	$ cd /opt/spark/conf
+	$ sudo mv spark-defaults.conf.template spark-defaults.conf
+	$ nano spark-defaults.conf
 
 Puis modifier le fichier comme suit : 
 
@@ -82,8 +84,10 @@ Puis modifier le fichier comme suit :
 	spark.executor.memory   512m
 	spark.executor.cores    2
 
-ici on choisit d’utiliser yarn)
+Ici, on choisit d’utiliser `yarn`. Vous pouvez choisir de rester en mode local.
+
 Attention : spark.driver.memory + 384 < yarn.nodemanager.resource.memory-mb 
+
 (sinon spark ne pourra pas démarrer)
 
 ## 2.2	Test et observation du cluster
@@ -91,16 +95,19 @@ Attention : spark.driver.memory + 384 < yarn.nodemanager.resource.memory-mb
 ### 2.2.1	Test
 
 Dans un premier temps, on stoppe et on redémarre hdfs et yarn
-$ start-dfs.sh
-$ start-yarn.sh
+
+	$ start-dfs.sh
+	$ start-yarn.sh
 
 * Vérifier avec jps le bon démarrage du cluster hadoop.
 
-		$ spark-submit --deploy-mode cluster –class	 org.apache.spark.examples.SparkPi /opt/spark/examples/jars/spark-examples_2.11-3.0.1.jar 7
+Tester votre cluster en utilisant les programmes de tests présents avec spark.
+
+	$ spark-submit --deploy-mode cluster –class org.apache.spark.examples.SparkPi /opt/spark/examples/jars/spark-examples_2.11-3.0.1.jar 7
 		
 Ou bien avec un fichier python
 
-		$ spark-submit --deploy-mode cluster	 /opt/spark/examples/src/main/python/pi.py 10
+	$ spark-submit --deploy-mode cluster /opt/spark/examples/src/main/python/pi.py 10
 
 (Il est possible de ne pas utiliser yarn)
 
@@ -125,16 +132,17 @@ Dans un premier temps, arrêter le serveur yarn et dfs et utiliser spark sur un 
 
 Ou bien modifier (il ne faudra oublier de la remplacer au cours de l’exercice 2)
 
-	spark.master            yarn
+	spark.master yarn
 
 par :
 
-	spark.master            local[*]
+    spark.master local[*]
 
 
 #### Exercice 1 :
 
-Créer et Compléter : TP2_exercice1_part1.py
+Créer et Compléter : `TP2_exercice1_part1.py`
+
 Puis le soumettre :
 
 	$ spark-submit TP2_exercice1_part1.py
@@ -146,97 +154,101 @@ Puis le soumettre :
 
 -	Étude des RDD
 
-o	Utilisation de SparkContext de pyspark
+	-	Utilisation de SparkContext de pyspark
 
 
-o	Créer un RDD composé de 20 nombres entiers aléatoires compris entre 0 et 9 inclus. 
+	-	Créer un RDD composé de 20 nombres entiers aléatoires compris entre 0 et 9 inclus. 
 
--	Utiliser numpy pour générer les nombres aléatoires puis créer un RDD
-•	A = np.random.randint(deb_int.,fin_int.,nb_elts)
+		-	Utiliser numpy pour générer les nombres aléatoires puis créer un RDD
+			-	`A = np.random.randint(deb_int.,fin_int.,nb_elts)`
 
--	Lancer sc avec :
-•	sc = SparkContext(master= "local[nbre_de_cœurs]")
-•	(remplacer nbre_de_cœurs par un nombre entier compris entre 1 et 4.
--	A la fin du programme, n’oubliez pas d’arrêter le SparkContext en utilisant la fonction stop() de SparkContext avec :	
- 	 sc.stop()
+		-	Lancer sc avec :
+			-	`sc = SparkContext(master= "local[nbre_de_cœurs]")`
+			-	remplacer `nbre_de_cœurs` par un nombre entier compris entre 1 et 4.
+		-	A la fin du programme, n’oubliez pas d’arrêter le SparkContext en utilisant la fonction `stop()` de SparkContext avec :	
+		
+ 	 			sc.stop()
 
--	On commencera avec un nbre de cœurs égale à 2 puis on modifiera sa valeur (1 et 4)
+		-	On commencera avec un nbre de cœurs égale à 2 puis on modifiera sa valeur (1 et 4)
 
-•	Créer un RDD nommé RDD_A à partir A :
-o	Utilisation de la commande parallelize de SparkContext qui sera appliqué à A et donnant comme résultat nommé : RDD_A
-o	Pour observer un RDD, on utilise la commande collect() qui récupère l’ensemble du contenu du rdd (à n’effectuer que lorsqu’on à besoin de tout récupérer)
--	type_rdd.collect()
-o	Pour observer l’effet de la parallélisation (c’est-à-dire le contenu du RDD sur chaque cœur), on intercale la fonction glom() avant collect()
--	observation : type_rdd.glom().collect()
-•	Un print() appliqué au contenu collecté affiche le résultat.
+			-	Créer un RDD nommé RDD_A à partir A :
+				-	Utilisation de la commande parallelize de SparkContext qui sera appliqué à A et donnant comme résultat nommé : RDD_A
+				-	Pour observer un RDD, on utilise la commande `collect()` qui récupère l’ensemble du contenu du rdd (à n’effectuer que lorsqu’on à besoin de tout récupérer)
+					-	`type_rdd.collect()`
+				-	Pour observer l’effet de la parallélisation (c’est-à-dire le contenu du RDD sur chaque cœur), on intercale la fonction glom() avant collect()
+					-	observation : `type_rdd.glom().collect()`
+			-	Un `print()` appliqué au contenu collecté affiche le résultat.
 
-o	Compter le nombre d’éléments
--	Appliqué la fonction count() au RDD et affiché le résultat.
+		-	Compter le nombre d’éléments
+			-	Appliqué la fonction count() au RDD et affiché le résultat.
 
-o	Afficher la liste des entiers de la suite générée
--	On applique la fonction distinct() à RRD_A et on sauve le résultat dans RDD_A_Distinct
--	Afficher le résultat
+		-	Afficher la liste des entiers de la suite générée
+			-	On applique la fonction `distinct()` à RRD_A et on sauve le résultat dans RDD_A_Distinct
+			-	Afficher le résultat
 
-o	Indiquer la somme de ces 20 entiers. Il existe différentes façon de le faire, il suffit d’appliquer l’une des 3 fonctions suivantes au RDD. 
--	sum()
--	reduce(lambda x,y :x+y)
--	fold(0, lambda x,y :x+y)
--	A-t-on le même résultat ?
--	Quelle est la différence entre reduce et fold ?
+		-	Indiquer la somme de ces 20 entiers. Il existe différentes façon de le faire, il suffit d’appliquer l’une des 3 fonctions suivantes au RDD. 
+			-	sum()
+			-	reduce(lambda x,y :x+y)
+			-	fold(0, lambda x,y :x+y)
+			-	A-t-on le même résultat ?
+			-	Quelle est la différence entre reduce et fold ?
 
-o	Afficher les nombres pairs en appliquant la fonction filter au RDD 
--	Nb : lambda x :x%2==0 dans filter peut aider
+		-	Afficher les nombres pairs en appliquant la fonction filter au RDD 
+			-	Nb : lambda x :x%2==0 dans filter peut aider
 
-o	Afficher quelques statistiques descriptives sur cette suite
--	Appliquer max(), min(), stdev(), stats() à RDD_A puis afficher les résulats
+		-	Afficher quelques statistiques descriptives sur cette suite
+			-	Appliquer max(), min(), stdev(), stats() à RDD_A puis afficher les résulats
 
-o	Mettre au carré RDD_A en lui appliquant un map
--	Intégrer lambda x:x*x à l’intérieur du map puis récupérer le résultat dans RDD_B
--	Créer une fonction qui est intégrer dans le map
-•	def square_x(x):	
-   return x*x	
+		-	Mettre au carré RDD_A en lui appliquant un map
+			-	Intégrer lambda x:x*x à l’intérieur du map puis récupérer le résultat dans RDD_B
+			-	Créer une fonction qui est intégrer dans le map
+				-	`def square_x(x):`
+				
+   					`return x*x`	
 
-•	type_rdd.map(square_x)
--	Collecter puis afficher les résultats
--	Quelles sont les différence entre map et flapmap
+		-	type_rdd.map(square_x)
+			-	Collecter puis afficher les résultats
+			-	Quelles sont les différence entre map et flapmap
 
-o	Appliquer des opérations sur 2 suites aléatoires (RDD_C et RDD_D)
--	La 1ère suite contient 3 nombres entiers (aléatoire) et la deuxième 4
--	En effectuer l’union
-•	Faire « + » et collecter puis afficher le résultat
--	Créer tous les couples (ci,dj) où ci (resp. dj) où représente ci l’ensemble des éléments de RDD_C (resp. de RDD_D)
-•	utiliser la fonction cartesian de RDD_C que l’on appliquera à RDD_D
-•	collecter puis afficher le résultat
+		-	Appliquer des opérations sur 2 suites aléatoires (RDD_C et RDD_D)
+			-	La 1ère suite contient 3 nombres entiers (aléatoire) et la deuxième 4
+			-	En effectuant l’union
+				-	Faire « + » et collecter puis afficher le résultat
+			-	Créer tous les couples (ci,dj) où ci (resp. dj) où représente ci l’ensemble des éléments de RDD_C (resp. de RDD_D)
+				-	utiliser la fonction cartesian de RDD_C que l’on appliquera à RDD_D
+				-	collecter puis afficher le résultat
 
-Créer et compléter : TP2_exercice1_part2.py
+Créer et compléter : `TP2_exercice1_part2.py`
+
 Puis le soumettre :
 
 	 $ spark-submit TP2_exercice1_part2.py
 
 -	Étude DataFrame
-o	Nous allons d’abord créer un dataframe (grâce à panda) qui sera transformé en dataframe (spark). Puis on appliquera quelques opérations sur ce dataframe
-o	Petites modification dans les import
--	import numpy as np
--	import pandas as pd
--	from pyspark.sql import SparkSession
--	from pyspark.sql import functions as F
-•	functions regroupe des fonctions élémentaires tel que min(.), max(.)
-o	La session sc sera créée par :
--	sc = SparkSession.builder.appName('TP1 part2').getOrCreate()
--	Du fait d’un dataframe, on utilise pyspark.sql.
-o	Opérations simples appliquées sur un dataframe
--	Création d’un dataframe (panda) nommé A comportant 2 colonnes (nommés A et B) et 20 lignes. On utilisera la fonction DataFrame de panda. Dans cette fonction, on intègrera une matrice (20,2) comportant un nombre aléatoire compris entre 0 et 9 (on utilisera la même fonction que précédemment).
--	Création d’un dataframe nommé RDD_A en utilisant la fonction createDataFrame appliqué à A.
--	Afficher le RDD_A en utilisant show()
--	Créer un dataframe RDD_B contenant RDD_A et incluant une colonne C ne contenant que des 0
-•	Appliquer withColumn à RDD_A en créant une colonne ‘C’ initialisé par F.lit(0)
-•	Afficher le résultat
--	Créer un dataframe RDD_C contenant RDD_A et incluant une colonne C contient les résultats de A-B
-•	De nouveau utiliser withColumn
--	Créer un dataframe RDD_D contenant RDD_C et incluant une colonne D qui indique si la valeur de C est négative
--	Créer un dataframe RDD_E en effectuant une aggrégation (groupBy) sur RDD_A des valeurs de A en affichant la moyenne (F.avg("B")) des valeurs de B (qui ont été aggrégées pour la valeur de A) ainsi que le mininum (F.min("B")), le maximum (F.max("B")) (ce qui doit donner un tableau comportant 10 lignes (0 à 9) et 4 colonnes (A, moyenne de B, minimum de B et maximum de B) 
 
--	Synthétiser rapidement les différences entre un RDD et un Dataframe (en spark)
+	-	Nous allons d’abord créer un dataframe (grâce à panda) qui sera transformé en dataframe (spark). Puis on appliquera quelques opérations sur ce dataframe
+	-	Petites modification dans les import
+		-	import numpy as np
+		-	import pandas as pd
+		-	from pyspark.sql import SparkSession
+		-	from pyspark.sql import functions as F
+			-	functions regroupe des fonctions élémentaires tel que min(.), max(.)
+	-	La session sc sera créée par :
+		-	sc = SparkSession.builder.appName('TP1 part2').getOrCreate()
+		-	Du fait d’un dataframe, on utilise pyspark.sql.
+	-	Opérations simples appliquées sur un dataframe
+		-	Création d’un dataframe (panda) nommé A comportant 2 colonnes (nommés A et B) et 20 lignes. On utilisera la fonction DataFrame de panda. Dans cette fonction, on intègrera une matrice (20,2) comportant un nombre aléatoire compris entre 0 et 9 (on utilisera la même fonction que précédemment).
+		-	Création d’un dataframe nommé RDD_A en utilisant la fonction createDataFrame appliqué à A.
+		-	Afficher le RDD_A en utilisant show()
+		-	Créer un dataframe RDD_B contenant RDD_A et incluant une colonne C ne contenant que des 0
+			-	Appliquer withColumn à RDD_A en créant une colonne ‘C’ initialisé par F.lit(0)
+		-	Afficher le résultat
+	-	Créer un dataframe RDD_C contenant RDD_A et incluant une colonne C contient les résultats de A-B
+		-	De nouveau utiliser withColumn
+	-	Créer un dataframe RDD_D contenant RDD_C et incluant une colonne D qui indique si la valeur de C est négative
+	-	Créer un dataframe RDD_E en effectuant une aggrégation (groupBy) sur RDD_A des valeurs de A en affichant la moyenne (F.avg("B")) des valeurs de B (qui ont été aggrégées pour la valeur de A) ainsi que le mininum (F.min("B")), le maximum (F.max("B")) (ce qui doit donner un tableau comportant 10 lignes (0 à 9) et 4 colonnes (A, moyenne de B, minimum de B et maximum de B) 
+
+	-	Synthétiser rapidement les différences entre un RDD et un Dataframe (en spark)
 
 PS : Attention : La notion de dataframe existe également sous python
 
@@ -259,25 +271,25 @@ Puis le soumettre :
 
 -	Copier les fichiers (holmes.txt et frankenstein.txt) dans le répertoire hdfs en utilisant la commande hadoc.
 -	Utiliser spark pour : 
-o	Lire les fichiers
--	Utiliser la fonction textFile de sc que vous appliquerez à holmes.txt et frankenstein.txt permettant de créer 2 RDD text_file1 et text_file2
--	Afficher les 3 premiers éléments de text_file1 ou 2 en utilisant la fonction take(3) de rdd (et print)
--	Que contient chaque élément du rdd text_file1
-o	Déterminer le nombre d’occurrence de chaque mot et le nombre de mots (pour chaque fichier)
--	Créer un rdd qui contient dans chaque élément un seul mot 
-•	Utiliser flatMap(lambda line : line.split(" "))
-o	Le séparateur de mot est 1 espace
-•	Filtrer le RDD afin d’enlever les mots vides ou autres à l’aide de la fonction filter du rdd précédent
-•	Compter le nombre de mots
-•	Créer un RDD de couple (mot,1) à l’aide de la fonction map du rdd de la ligne précédente
-•	Réduire par clefs en sommant les valeurs 
-o	Utilisation de la fonction reduceByKeys(lambda a,b : a+b)
+	-	Lire les fichiers
+		-	Utiliser la fonction textFile de sc que vous appliquerez à holmes.txt et frankenstein.txt permettant de créer 2 RDD text_file1 et text_file2
+		-	Afficher les 3 premiers éléments de text_file1 ou 2 en utilisant la fonction take(3) de rdd (et print)
+		-	Que contient chaque élément du rdd text_file1
+	-	Déterminer le nombre d’occurrence de chaque mot et le nombre de mots (pour chaque fichier)
+		-	Créer un rdd qui contient dans chaque élément un seul mot 
+		-	Utiliser flatMap(lambda line : line.split(" "))
+	-	Le séparateur de mot est 1 espace
+		-	Filtrer le RDD afin d’enlever les mots vides ou autres à l’aide de la fonction filter du rdd précédent
+	-	Compter le nombre de mots
+	-	Créer un RDD de couple (mot,1) à l’aide de la fonction map du rdd de la ligne précédente
+	-	Réduire par clefs en sommant les valeurs 
+		-	Utilisation de la fonction reduceByKeys(lambda a,b : a+b)
 
-o	Déterminer les probabilités d’apparition de chaque mot (pour chaque fichiers) on utilisera la fonction map and co.
-o	Afficher les 10 mots les plus fréquents (occurrences et fréquences) pour chaque fichier
--	Analyser le résultat
-o	Comment étudier la différence entre les 2 textes 
-o	Question philosophique : Est-ce que tous les mots ont la même importance ?
+-	Déterminer les probabilités d’apparition de chaque mot (pour chaque fichiers) on utilisera la fonction map and co.
+-	Afficher les 10 mots les plus fréquents (occurrences et fréquences) pour chaque fichier
+	-	Analyser le résultat
+-	Comment étudier la différence entre les 2 textes 
+-	Question philosophique : Est-ce que tous les mots ont la même importance ?
 
  
 # 3	Test de la librairie SparkStreaming
@@ -287,13 +299,14 @@ o	Question philosophique : Est-ce que tous les mots ont la même importance ?
 #### 3.1.1	Création d’un flux (socket) et ouverture d’un port
 
 -	Ouvrir un flux
-o	Ouvrir un socket sur le port 9999 en utilisant netcat dans un terminal
+	-	Ouvrir un socket sur le port 9999 en utilisant netcat dans un terminal
 
-		$ nc -l -p 9999
+			$ nc -l -p 9999
 
 -	Vérifier si le port est ouvert et que le socket fonctionne
-o	Ouvrez un socket sur le port 9999 en utilisant netcat sur un deuxième terminal
-$ nc pi-nodeXXX 9999
+	-	Ouvrez un socket sur le port 9999 en utilisant netcat sur un deuxième terminal
+
+			$ nc pi-nodeXXX 9999
 
 (remplacer pi-nodeXXX par votre nœud)
 
@@ -306,7 +319,7 @@ L’annexe 1 indique comment envoyer en continu la date (toutes les 3 secondes s
 
 Maintenant que les communications sont établies, il est préférable que Spark ce charge de traiter ce flux. C’est le rôle de Spark Streaming.
 
-https://spark.apache.org/docs/latest/api/python/pyspark.streaming.html
+`https://spark.apache.org/docs/latest/api/python/pyspark.streaming.html`
 
 Ici, nous allons juste compter le nombre d’erreurs qui se produisent
 
@@ -315,22 +328,23 @@ Nous allons commencer par créer et compléter : premierStreamApp.py
 -	Pouvez-vous préciser le rôle des fonctions en gras ?
 
 On crée :
--	Un contexte spark
--	Un contexte spark streaming
--	On récupère le texte du flux émis
--	On compte les mots
--	On affiche le comptage
--	On fait varier l’intervalle d’écoute
+* 	Un contexte spark
+* 	Un contexte spark streaming
+* 	On récupère le texte du flux émis
+* 	On compte les mots
+* 	On affiche le comptage
+* 	On fait varier l’intervalle d’écoute
 
 #### 3.1.2.1	Exemple 1 : Suite d’intervalles
 
 Dans cet exemple, on va introduire les fonctionnalités de base :
--	StreamingContext : permet d’établir une lecture d’un flux par intervalle de n secondes (ici 10)
--	socketTextStream : permet de récupérer les données lues dans l’intrervalle
--	pprint : affiche en flux
 
-ssc.start() : démarre le traitement 
-ssc.awaitTermination() : attend l’arrêt
+* StreamingContext : permet d’établir une lecture d’un flux par intervalle de n secondes (ici 10)
+* socketTextStream : permet de récupérer les données lues dans l’intrervalle
+* pprint : affiche en flux
+
+* `ssc.start()` : démarre le traitement 
+* `ssc.awaitTermination()` : attend l’arrêt
 
 
 Veuillez créer et compléter le fichier SparkStreamingEx3_part1.py :
@@ -590,107 +604,8 @@ Pourriez-vous expliquez :
 -	Quel est l’intérêt de reduceByKeysAndWindow(.) par rapport reduceByWindow(.)
 
 	$ spark-submit ???.py localhost 9999
-   
+    
 
- 
-## 3.2	Exemple plus complexe 
-
-Cette partie sera effectuée en projet pour ceux qui le désirent.
-
-Identifier les tendances des Hashtag twitter (inspiré du blog de Hanee’ Medhat Shousha https://www.toptal.com/apache/apache-spark-streaming-twitter
-ou
-https://blog.impulsebyingeniance.io/traitement-en-temps-reel-des-tweets-avec-apache-spark-streaming/
-
-L’idée est de reprendre son exemple (la partie récupération et traitement) et de le tester.
-
-
-### 3.2.1	Création des accréditation pour utiliser l’API Twitter 
-
-Afin d’obtenir des tweets de Twitter, vous devez vous inscrire sur TwitterApps en cliquant sur "Create new app" et ensuite remplir le formulaire ci-dessous cliquez sur "Créer votre application Twitter."
-Twitter ayant changé la méthode d’accréditation, cela peut prendre un peu de temps.
-
-Deuxièmement, allez à votre application nouvellement créée et ouvrez le tableau “Keys and Access Tokens” tab. Puis cliquez sur “Generate my access token.”
-
- 
-De nouveaux jetons d’accès apparaîtront ci-dessous.
- 
-Et maintenant vous êtes prêt pour la prochaine étape.
-
-### 3.2.2	Construire le client http Twitter 
-
-Dans cette étape, on va construire un client simple qui obtiendra les tweets de Twitter API en utilisant Python et les transmettra à l’instance Spark Streaming. 
-Tout d’abord, nous allons créer un fichier appelé twitter_app.py en ajoutant le code ci-dessous. 
-
-Importer les bibliothèques ci-dessous :
-
-	import socket
-	import sys
-	import requests
-	import requests_oauthlib
-	import json
-
-Et ajoutez les variables qui seront utilisées dans OAuth pour se connecter à Twitter comme ci-dessous:
-
-	# Replace the values below with yours
-	ACCESS_TOKEN = 'YOUR_ACCESS_TOKEN'
-	ACCESS_SECRET = 'YOUR_ACCESS_SECRET'
-	CONSUMER_KEY = 'YOUR_CONSUMER_KEY'
-	CONSUMER_SECRET = 'YOUR_CONSUMER_SECRET'
-	my_auth = requests_oauthlib.OAuth1(CONSUMER_KEY, 	CONSUMER_SECRET,ACCESS_TOKEN, ACCESS_SECRET)
-
-Vous allez créer une fonction dénommée get_tweets qui appellera l’URL de l’API Twitter et renverra en réponse un stream de tweets
-
-	def get_tweets():
-	url = 'https://stream.twitter.com/1.1/statuses/filter.json'
-	query_data = [('language', 'en'), ('locations', '-130,-20,100,50'),('track','#')]
-	query_url = url + '?' + '&'.join([str(t[0]) + '=' + str(t[1]) for t in query_data])
-	response = requests.get(query_url, auth=my_auth, stream=True)
-	print(query_url, response)
-	return response
-
-Maintenant, il est nécessaire de créer une fonction qui prend la réponse précédente et extrait le texte des tweets à partir de l’objet json qui comporte l’intégralité des tweets. Ensuite on enverra chaque tweet à l’instance Spark Streaming au travers d’une connexion TCP.
-
-	def send_tweets_to_spark(http_resp, tcp_connection):
-		for line in http_resp.iter_lines():
-    		try:
-        	full_tweet = json.loads(line)
-        	tweet_text = full_tweet['text']
-        	print("Tweet Text: " + tweet_text)
-        	print ("------------------------------------------")
-        	tcp_connection.send(tweet_text + '\n')
-    	except:
-        	e = sys.exc_info()[0]
-        	print("Error: %s" % e)
-
-à vous de poursuivre.
-
- 
-# 4	Annexe 1 : Shell en continu
-
-On envoie un fichier (ici result.txt) via nc vers le port 999) en tâche de fond, puis en excécute un shell qui contient une boucle infinie et qui créé toute les 3 s un fichir result.txt (qui contient, ici, la date)/
-
-	$ tail -f result.txt | nc -l 999 &
-	$ ./exemple.sh
-
-
-Voici le shell qui a été utilisé (ici on lit la date, mais cela pourrait être n’importe quoi)
-
-	$nano exemple.sh
-	$##!/bin/bash
-
-	while true
-	do
-	#    timestamp=$(date)
-	#    echo $timestamp
-	#    read_folder()
-    timestamp=$(date)
-    echo $timestamp  > result.txt
-    sleep 3
-	done
-
-Et on n’oubliera pas de le rendre exécutable
-
-	$chmod +x exemple.sh
 
 
 
