@@ -317,6 +317,8 @@ L’annexe 1 indique comment envoyer en continu la date (toutes les 3 secondes s
 
 ### 3.1.2	Utilisation de Spark Streaming
 
+**A venir**
+
 Maintenant que les communications sont établies, il est préférable que Spark ce charge de traiter ce flux. C’est le rôle de Spark Streaming.
 
 `https://spark.apache.org/docs/latest/api/python/pyspark.streaming.html`
