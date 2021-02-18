@@ -1,4 +1,4 @@
-# Raspberry pi 4, Haddop & compagnie
+# Raspberry pi 4, Hadoop & compagnie
 
 - Ce répertoire a pour objectif de vous présenter mon expérience dans l'utilisation d'un cluster de raspberry pi 4 et pi 3 afin d'utiliser :
 
