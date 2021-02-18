@@ -327,7 +327,7 @@ Nous allons commencer par créer et compléter : premierStreamApp.py
 
 -	Pouvez-vous préciser le rôle des fonctions en gras ?
 
-On crée :
+Au cours de ce 3ème exercice, on va créer :
 * 	Un contexte spark
 * 	Un contexte spark streaming
 * 	On récupère le texte du flux émis
@@ -335,9 +335,9 @@ On crée :
 * 	On affiche le comptage
 * 	On fait varier l’intervalle d’écoute
 
-#### 3.1.2.1	Exemple 1 : Suite d’intervalles
+#### 3.1.2.1	Suite d’intervalles
 
-Dans cet exemple, on va introduire les fonctionnalités de base :
+On va introduire les fonctionnalités de base :
 
 * StreamingContext : permet d’établir une lecture d’un flux par intervalle de n secondes (ici 10)
 * socketTextStream : permet de récupérer les données lues dans l’intrervalle
@@ -347,7 +347,8 @@ Dans cet exemple, on va introduire les fonctionnalités de base :
 * `ssc.awaitTermination()` : attend l’arrêt
 
 
-Veuillez créer et compléter le fichier SparkStreamingEx3_part1.py :
+Veuillez créer et compléter le fichier 
+TP2_Exercice3_SparkStreaming_part1.py :
 
 	# Import libs
 
@@ -428,14 +429,14 @@ Puis modifier la ligne : log4j.rootCategory=INFO, console
 Par : log4j.rootCategory=WARN, console
 
 
-#### 	3.1.2.2	Exemple 2 : Intégration sur plusieurs intervalles
+#### 	3.1.2.2	Intégration sur plusieurs intervalles
 
 Le résultat précédent ne traite que l’intervalle. Ici, nous allons intégrer les calculs sur plusieurs intervalles
 
 
 On étudiera la fonction : UpdateStateByKey
 
-Veuillez créer et compléter le fichier : SparkStreamingEx3_part2.py
+Veuillez créer et compléter le fichier : TP2_Exercice3_SparkStreaming_part2.py
 
 	import sys
 	from pyspark import SparkContext
@@ -479,11 +480,11 @@ Open a socket on port 9999 using netcat
 
 	$ spark-submit ??.py pi-nodeXXX 9999
 
-#### 3.1.2.3	Exemple 3 : Utilisation d’une fenêtre glissante
+#### 3.1.2.3	Utilisation d’une fenêtre glissante
 
 On étudiera la fonction  : countByWindow
 
-Veuillez créer et compléter le fichier : SparkStreamingEx3_part3.py
+Veuillez créer et compléter le fichier : TP2_Exercice3_SparkStreaming_part3.py
 
 	# Import libs
 	import sys
@@ -517,11 +518,11 @@ Soumettre le script
 
 	$ spark-submit ??.py localhost 9999
 
-#### 3.1.2.4	Exemple 4
+#### 3.1.2.4	etude de reduceByWindows
 
 Étude de la fonction suivante : reduceByWindow
 
-Veuillez créer et compléter le fichier : SparkStreamingEx3_part4.py
+Veuillez créer et compléter le fichier : TP2_Exercice3_SparkStreaming_part4.py
 
 	# Import libs
 	import sys
@@ -560,11 +561,11 @@ Pourriez-vous expliquez :
 		$ spark-submit ???.py localhost 9999
 
 
-#### 3.1.2.5	Exemple 5 :
+#### 3.1.2.5	Etude de reduceBykeyAndWindow
 
  Étude de la fonction : reduceByKeyAndWindow
 
-Veuillez créer et compléter le fichier : SparkStreamingEx3_part5.py
+Veuillez créer et compléter le fichier : TP2_Exercice3_SparkStreaming_part5.py
 
 	# Import libs
 	import sys
