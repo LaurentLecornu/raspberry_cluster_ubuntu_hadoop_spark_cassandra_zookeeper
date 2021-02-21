@@ -9,8 +9,8 @@
 	- Kafka (à venir)
 
 - Il sera représenté les phases de :
-	- construction du cluster
-	- configuration du système support
+	- construction du cluster (*cf. dossier instruction*)
+	- configuration du système support (*cf. dossier instruction*)
 	- installation et test des modules :
 		- Hadoop (TP1)
 		- Spark (TP2)
