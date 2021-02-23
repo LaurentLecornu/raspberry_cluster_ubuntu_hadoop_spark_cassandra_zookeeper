@@ -73,6 +73,15 @@ Attention : spark.driver.memory + 384 < yarn.nodemanager.resource.memory-mb
 
 (sinon spark ne pourra pas démarrer)
 
+On peut remplacer :
+
+        spark.master            yarn
+par :
+
+	spark.master            local[*]
+
+Cela permet de lancer un spark en local.
+
 ## 2.2	Test et observation du cluster
 
 ### 2.2.1	Test
@@ -92,7 +101,7 @@ Ou bien avec un fichier python
 
 	$ spark-submit --deploy-mode cluster /opt/spark/examples/src/main/python/pi.py 10
 
-(Il est possible de ne pas utiliser yarn)
+(Il est possible de ne pas utiliser yarn et d'effectuer un deploiement en mode local)
 
 
 ### 2.2.2	Observation du cluster
@@ -112,7 +121,6 @@ Dans un premier temps, arrêter le serveur yarn et dfs et utiliser spark sur un 
 
 
 
-
 Ou bien modifier (il ne faudra oublier de la remplacer au cours de l’exercice 2)
 
 	spark.master yarn
@@ -124,11 +132,11 @@ par :
 
 #### Exercice 1 :
 
-Créer et Compléter : `TP2_exercice1_part1.py`
+Créer et Compléter : `TP2_exercice1_RDD.py`
 
 Puis le soumettre :
 
-	$ spark-submit TP2_exercice1_part1.py
+	$ spark-submit TP2_exercice1_RDD.py
 
 (on prend les valeurs par défaut en local)
 
@@ -201,11 +209,11 @@ Puis le soumettre :
 				-	utiliser la fonction cartesian de RDD_C que l’on appliquera à RDD_D
 				-	collecter puis afficher le résultat
 
-Créer et compléter : `TP2_exercice1_part2.py`
+Créer et compléter : `TP2_exercice1_DataFrame.py`
 
 Puis le soumettre :
 
-	 $ spark-submit TP2_exercice1_part2.py
+	 $ spark-submit TP2_exercice1_DataFrame.py
 
 -	Étude DataFrame
 
@@ -240,7 +248,7 @@ PS : Attention : La notion de dataframe existe également sous python
 
 Étude de 2 textes en anglais : Frankeinstein of the Modern Prometheus et The Adventures of Sherlok Holmes
 
-On commencera par démarrer les services dfs puis on copiera deux fichiers qui seront traités. On créera et completera TP2_exercice2.py
+On commencera par démarrer les services dfs puis on copiera deux fichiers qui seront traités. On créera et completera TP2_exercice2_RDD_text.py
 
 	$ start-dfs.sh
 	$ hadoop fs -put /home/pi/holmes.txt /holmes.txt
@@ -248,7 +256,7 @@ On commencera par démarrer les services dfs puis on copiera deux fichiers qui s
 
 Puis le soumettre :
 
-	$ spark-submit TP2_exercice2.py
+	$ spark-submit TP2_exercice2_RDD_text.py
 
 -	Utiliser la fonction SparkContext de pyspark pour créer sc
 
@@ -432,7 +440,9 @@ Veuillez créer et compléter le fichier : TP2_Exercice3_SparkStreaming_part2.py
     	# 2 is the batch interval : 2 seconds
     	ssc = StreamingContext(à compléter)
     	# Checkpoint for backups
-
+        ssc.checkpoint("file:///tmp/spark")
+	
+	
     	lines = ssc.socketTextStream(à compléter)
 
 	    # Update function
@@ -453,17 +463,18 @@ Veuillez créer et compléter le fichier : TP2_Exercice3_SparkStreaming_part2.py
 Analyser le rôle des nouvelles fonctions, c’est-à-dire pourriez-vous expliquez :
 -	La fonction countWords (décrire l’algorithme suivi)
 -	updateStateByKey(.)
+-	- Quel est l erôle de checkpoint ?
 
 
-Lancez netcat comme précédemment
+Lancez netcat comme précédemment sur le premier terminal
 
 	$ nc -l -p 9999
 
-• Soumettre le script python
+• Soumettre le script python sur le deuxièe terminal
 
 Open a socket on port 9999 using netcat
 
-	$ spark-submit ??.py pi-nodeXXX 9999
+	$ spark-submit TP2_Exercice3_SparkStreaming_part2.py pi-nodeXXX 9999
 
 #### 3.1.2.3	Utilisation d’une fenêtre glissante
 
@@ -497,11 +508,13 @@ Veuillez créer et compléter le fichier : TP2_Exercice3_SparkStreaming_part3.py
 Pourriez-vous expliquez :
 -	countByWindow(.)
 
+Lancez netcat comme précédemment sur le premier terminal
+
 	$ nc -l -p 9999
 
 Soumettre le script
 
-	$ spark-submit ??.py localhost 9999
+	$ spark-submit TP2_Exercice3_SparkStreaming_part3.py localhost 9999
 
 #### 3.1.2.4	etude de reduceByWindows
 
@@ -543,7 +556,13 @@ Pourriez-vous expliquez :
 -	Comparer reduceByWindow et counByWindow, indiquer les différences
 -	Est-il possible de connaître les entrants et les sortants de l’intervalle (suite au glissement de l’intervalle)
 
-		$ spark-submit ???.py localhost 9999
+Lancez netcat comme précédemment sur le premier terminal
+
+	$ nc -l -p 9999
+
+Soumettre le script
+		
+	$ spark-submit TP2_Exercice3_SparkStreaming_part4.py localhost 9999
 
 
 #### 3.1.2.5	Etude de reduceBykeyAndWindow
@@ -589,7 +608,13 @@ Pourriez-vous expliquez :
 -	reduceByKeysAndWindow(.)
 -	Quel est l’intérêt de reduceByKeysAndWindow(.) par rapport reduceByWindow(.)
 
-	$ spark-submit ???.py localhost 9999
+Lancez netcat comme précédemment sur le premier terminal
+
+	$ nc -l -p 9999
+
+Soumettre le script
+
+	$ spark-submit TP2_Exercice3_SparkStreaming_part5.py localhost 9999
     
 
 
