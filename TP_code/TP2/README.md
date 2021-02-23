@@ -13,23 +13,6 @@
 
 ## 2.1	Déploiement d’un cluster Spark
 
-Un cluster Spark se compose d’un nœud master et plusieurs nœuds workers. Le master s’occupe uniquement de la gestion du cluster et les workers sont les exécuteurs des jobs MapReduce pour le traitement distribué.
-
-Spark peut être utilisé seul. Il existe plusieurs méthodes pour le déployer. 
-
-* Standalone Deploy Mode : la méthode la plus simple
-* Apache Mesos
-* Hadoop YARN : celle que l’on utilisera
-* Kubernetes
-
-Pour exécuter un traitement sur un cluster Spark, il faut soumettre une application dont le traitement sera piloté par un driver. Comme vous l’avez vu précédemment, deux modes d’exécution sont possibles :
-
-* mode client : le driver est créé sur la machine qui soumet l’application
-* mode cluster : le driver est créé à l’intérieur du cluster
-
-Nous venons d’installer un cluster hadoop et d’utiliser yarn que nous allons utiliser pour spark. 
-
-
 ### 2.1.1	Installation de Spark sur tous les nœuds du cluster
 
 La première étape est de vérifier que Spark sur chacun des nœuds de votre cluster.
