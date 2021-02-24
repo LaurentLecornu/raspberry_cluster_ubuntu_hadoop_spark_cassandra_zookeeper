@@ -13,6 +13,23 @@
 
 ## 2.1	Déploiement d’un cluster Spark
 
+Un cluster Spark se compose d’un nœud master et plusieurs nœuds workers. Le master s’occupe uniquement de la gestion du cluster et les workers sont les exécuteurs des jobs MapReduce pour le traitement distribué.
+
+Spark peut être utilisé seul. Il existe plusieurs méthodes pour le déployer. 
+
+* Standalone Deploy Mode : la méthode la plus simple
+* Apache Mesos
+* Hadoop YARN : celle que l’on utilisera
+* Kubernetes
+
+Pour exécuter un traitement sur un cluster Spark, il faut soumettre une application dont le traitement sera piloté par un driver. Comme vous l’avez vu précédemment, deux modes d’exécution sont possibles :
+
+* mode client : le driver est créé sur la machine qui soumet l’application
+* mode cluster : le driver est créé à l’intérieur du cluster
+
+Nous venons d’installer un cluster hadoop et d’utiliser yarn que nous allons utiliser pour spark. 
+
+
 ### 2.1.1	Installation de Spark sur tous les nœuds du cluster
 
 La première étape est de vérifier que Spark sur chacun des nœuds de votre cluster.
@@ -73,15 +90,6 @@ Attention : spark.driver.memory + 384 < yarn.nodemanager.resource.memory-mb
 
 (sinon spark ne pourra pas démarrer)
 
-On peut remplacer :
-
-        spark.master            yarn
-par :
-
-	spark.master            local[*]
-
-Cela permet de lancer un spark en local.
-
 ## 2.2	Test et observation du cluster
 
 ### 2.2.1	Test
@@ -101,7 +109,7 @@ Ou bien avec un fichier python
 
 	$ spark-submit --deploy-mode cluster /opt/spark/examples/src/main/python/pi.py 10
 
-(Il est possible de ne pas utiliser yarn et d'effectuer un deploiement en mode local)
+(Il est possible de ne pas utiliser yarn)
 
 
 ### 2.2.2	Observation du cluster
@@ -121,6 +129,7 @@ Dans un premier temps, arrêter le serveur yarn et dfs et utiliser spark sur un 
 
 
 
+
 Ou bien modifier (il ne faudra oublier de la remplacer au cours de l’exercice 2)
 
 	spark.master yarn
@@ -132,11 +141,11 @@ par :
 
 #### Exercice 1 :
 
-Créer et Compléter : `TP2_exercice1_RDD.py`
+Créer et Compléter : `TP2_exercice1_part1.py`
 
 Puis le soumettre :
 
-	$ spark-submit TP2_exercice1_RDD.py
+	$ spark-submit TP2_exercice1_part1.py
 
 (on prend les valeurs par défaut en local)
 
@@ -209,11 +218,11 @@ Puis le soumettre :
 				-	utiliser la fonction cartesian de RDD_C que l’on appliquera à RDD_D
 				-	collecter puis afficher le résultat
 
-Créer et compléter : `TP2_exercice1_DataFrame.py`
+Créer et compléter : `TP2_exercice1_part2.py`
 
 Puis le soumettre :
 
-	 $ spark-submit TP2_exercice1_DataFrame.py
+	 $ spark-submit TP2_exercice1_part2.py
 
 -	Étude DataFrame
 
@@ -248,7 +257,7 @@ PS : Attention : La notion de dataframe existe également sous python
 
 Étude de 2 textes en anglais : Frankeinstein of the Modern Prometheus et The Adventures of Sherlok Holmes
 
-On commencera par démarrer les services dfs puis on copiera deux fichiers qui seront traités. On créera et completera TP2_exercice2_RDD_text.py
+On commencera par démarrer les services dfs puis on copiera deux fichiers qui seront traités. On créera et completera TP2_exercice2.py
 
 	$ start-dfs.sh
 	$ hadoop fs -put /home/pi/holmes.txt /holmes.txt
@@ -256,7 +265,7 @@ On commencera par démarrer les services dfs puis on copiera deux fichiers qui s
 
 Puis le soumettre :
 
-	$ spark-submit TP2_exercice2_RDD_text.py
+	$ spark-submit TP2_exercice2.py
 
 -	Utiliser la fonction SparkContext de pyspark pour créer sc
 
@@ -440,9 +449,7 @@ Veuillez créer et compléter le fichier : TP2_Exercice3_SparkStreaming_part2.py
     	# 2 is the batch interval : 2 seconds
     	ssc = StreamingContext(à compléter)
     	# Checkpoint for backups
-        ssc.checkpoint("file:///tmp/spark")
-	
-	
+
     	lines = ssc.socketTextStream(à compléter)
 
 	    # Update function
@@ -463,18 +470,17 @@ Veuillez créer et compléter le fichier : TP2_Exercice3_SparkStreaming_part2.py
 Analyser le rôle des nouvelles fonctions, c’est-à-dire pourriez-vous expliquez :
 -	La fonction countWords (décrire l’algorithme suivi)
 -	updateStateByKey(.)
--	- Quel est l erôle de checkpoint ?
 
 
-Lancez netcat comme précédemment sur le premier terminal
+Lancez netcat comme précédemment
 
 	$ nc -l -p 9999
 
-• Soumettre le script python sur le deuxièe terminal
+• Soumettre le script python
 
 Open a socket on port 9999 using netcat
 
-	$ spark-submit TP2_Exercice3_SparkStreaming_part2.py pi-nodeXXX 9999
+	$ spark-submit ??.py pi-nodeXXX 9999
 
 #### 3.1.2.3	Utilisation d’une fenêtre glissante
 
@@ -508,13 +514,11 @@ Veuillez créer et compléter le fichier : TP2_Exercice3_SparkStreaming_part3.py
 Pourriez-vous expliquez :
 -	countByWindow(.)
 
-Lancez netcat comme précédemment sur le premier terminal
-
 	$ nc -l -p 9999
 
 Soumettre le script
 
-	$ spark-submit TP2_Exercice3_SparkStreaming_part3.py localhost 9999
+	$ spark-submit ??.py localhost 9999
 
 #### 3.1.2.4	etude de reduceByWindows
 
@@ -556,13 +560,7 @@ Pourriez-vous expliquez :
 -	Comparer reduceByWindow et counByWindow, indiquer les différences
 -	Est-il possible de connaître les entrants et les sortants de l’intervalle (suite au glissement de l’intervalle)
 
-Lancez netcat comme précédemment sur le premier terminal
-
-	$ nc -l -p 9999
-
-Soumettre le script
-		
-	$ spark-submit TP2_Exercice3_SparkStreaming_part4.py localhost 9999
+		$ spark-submit ???.py localhost 9999
 
 
 #### 3.1.2.5	Etude de reduceBykeyAndWindow
@@ -608,13 +606,7 @@ Pourriez-vous expliquez :
 -	reduceByKeysAndWindow(.)
 -	Quel est l’intérêt de reduceByKeysAndWindow(.) par rapport reduceByWindow(.)
 
-Lancez netcat comme précédemment sur le premier terminal
-
-	$ nc -l -p 9999
-
-Soumettre le script
-
-	$ spark-submit TP2_Exercice3_SparkStreaming_part5.py localhost 9999
+	$ spark-submit ???.py localhost 9999
     
 
 
