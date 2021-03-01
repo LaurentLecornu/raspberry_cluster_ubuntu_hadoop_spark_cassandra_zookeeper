@@ -104,28 +104,27 @@ Cet utilitaire gravera votre système d'exploitation initial en version vierge.
 
 Le Raspberry Pi 4 a une architecture 64 bits. Le Raspberry pi 3 possède une architecture 32 bits. 
 
-Lors de mes premières tentatives, j'ai utilisé le Raspbian (seule la version 32 bits disponible) - mais j'ai eu des problèmes avec l'installation de Spark.
+Lors de mes premières tentatives, j'ai utilisé le Raspbian (seule la version 32 bits est disponible) - mais j'ai eu des problèmes avec l'installation de Spark.
 
-J'ai décidé, après lecture de quelques tutoriels, d'utiliser la version Ubuntu 64 bits (recommandée par Ubuntu pour Pi 4) (et la version 32 bits pour les Pi 3).
+J'ai décidé, après lecture de quelques tutoriels, d'utiliser la version Ubuntu 64 bits (recommandée par Ubuntu pour Pi 4).
 
 * **Initialisation des SD**
 
 Insérez votre SD et démarrez l'imageur Raspberry Pi et installez le serveur Ubuntu 20.04.2 64bit. 
-Faites de même pour toutes vos cartes PI Micro SD (pour les raspberry pi 4)
+Faites de même pour toutes vos cartes SD (pour les raspberry pi 4)
 
 Le serveur Ubuntu 20.04 est disponible en version minimale, configuré pour connecter le réseau Ethernet par DHCP.
 
 
 ### 2.3.2 Connexion au réseau
 
-Il s'agit d'un cluster - le réseau est primordial. Tout ce tutoriel suppose que vous avez un réseau domestique avec un routeur ou une passerelle.
-
+Il s'agit d'un cluster. Tout ce tutoriel suppose que vous avez un réseau domestique avec un routeur ou une passerelle.
 
 Vous aurez besoin d'accéder au système d'exploitation pour configurer votre réseau. 
 
 Vous pouvez le faire de deux façons différentes : 
 
-* La première façon, la plus simple est d'acheter un adaptateur du micro-HDMI au HDMI, un clavier filaire et de brancher votre Raspberry un par un. Vous aurez un accès direct avec le nom d'utilisateur/mot de passe initial.
+* La première façon, la plus simple est d'acheter un adaptateur du micro-HDMI au HDMI, un clavier filaire, une souris et un écran et de brancher votre Raspberry un par un. Vous aurez un accès direct avec le nom d'utilisateur/mot de passe initial.
 
 * La deuxième façon de connecter initialement les raspberry est de compter sur votre DHCP et de connecter le Pi sur votre réseau câblé (ethernet).
 
@@ -207,7 +206,7 @@ Remarque - n'utilisez pas la commande useradd de bas niveau !
 
 On commencera par ajouter un user pi en mode admin. 
 
-	sudo adduser pi
+    sudo adduser pi
 
     sudo usermod -aG sudo pi
     sudo usermod -aG admin pi
@@ -253,7 +252,7 @@ Vous trouverez utile d'installer le paquet net-tools ! Il est livré avec *netst
 
 ## 2.5 accès au bureau à distance
 
-J'ai également installé une interface graphique légère (xfce4) avec un navigateur Web (chromium) et un accès au bureau à distance (xrdp). 
+On peut également installé une interface graphique légère (par ex. xfce4) avec un navigateur Web (chromium) et un accès au bureau à distance (xrdp). 
 
 Dans mon cas, ce n'est pas nécessaire car je me connecte via *ssh* et que je fais tout via un terminal. Mais il arrive qu'il soit nécessaire de brancher un clavier, une souris et un écran. Par exemple, dans le cas où votre raspberry décide de ne pas utiliser l'adresse ip allouée et que vous n'arrivez pas à le retrouver.
 
@@ -321,10 +320,8 @@ Le fichier `/etc/hosts` contiendra l'ensemble des machines de votre (vos) cluste
     
     
 
-
 ## 2.7 Installation de Java
 
-C'était un talon d'Achille :
 Hadoop est compilé et fonctionne bien sur Java8. 
 Il ne semble pas exiter de build de Java Hotspot 8 ou Oracle Java 8 pour l'architecture AMR64. La solution retenu par la communauté est d'utiliser l'OpenJDK8, déjà disponible dans les référentiels Ubuntu.
 
@@ -403,67 +400,18 @@ Et copiez sur tous les nœuds. Cet example montre une copie sur 2 nœuds.
 Remarque - vous devez effectuer ce processus sur chaque nœud de cluster. En fin de compte, tous les nœuds auront toutes les clés publiques dans leurs listes. C'est important - ne pas avoir la clé empêcherait la communication de machine à machine après.
 
 
-## 2.9 Scripts pour gérer le cluster
-
-Créez des fonctions pour vous aider dans la gestion du cluster, en ajoutant ce qui suit dans le fichier suivant :
-
-/home/pi/.bashrc
-
-
-    ####### functions  for the cluster management
-
-    function otherpis {
-      grep "pi" /etc/hosts | awk '{print $2}' | grep -v $(hostname)
-    }
-
-    function clustercmd {
-      for pi in $(otherpis); do ssh $pi "$@"; done
-      $@
-    }
-
-    function clustercmd-sudo {
-      for pi in $(otherpis); do ssh $pi "echo pi| sudo -S  $@"; done
-      echo pi| sudo -S $@
-    }
-
-    function clusterreboot {
-      clustercmd-sudo shutdown -r now
-    }
-
-    function clustershutdown {
-      clustercmd-sudo shutdown now
-    }
-
-    function clusterscp {
-      for pi in $(otherpis); do
-        cat $1 | ssh $pi "sudo tee $1" > /dev/null 2>&1
-      done
-    }
-
-(attention on liste /etc/hosts, si comme moi vous pouvez avoir plusieurs clusters différents, vous pouvre écrire des variantes de ces commandes et rien ne vous oblige à n'utiliser que /etc/hosts pour récupér les noms de vos nœuds.
-
-Exécutez la commande :
-
-`source /home/pi/.bashrc`
-
-Vous devez le faire dans tous les nœuds. Utilisez la commande *scp* pour copier entre les nœuds si vous préférez.
-
-
-## 2.10 Synchronisation de l'heure
+## 2.9 Synchronisation de l'heure
 
 Habituellement, je synchronise toutes mes machines avec un serveur de temps en UTC. Dans un cluster, c'est encore plus important.
 
-    pi@pi-node13:~$ clustercmd date
+    pi@pi-node13:~$ date
     Sat Jan 23 20:59:28 UTC 2021
-    Sat Jan 23 20:55:30 UTC 2021
-    Sat Jan 23 20:53:31 UTC 2021
-    Sat Jan 23 20:52:31 UTC 2021
 
 
 Exécutez la commande suivante :
 
-    clustercmd-sudo apt install htpdate -y
-    clustercmd-sudo htpdate -a -l www.pool.ntp.org
+    sudo apt install htpdate -y
+    sudo htpdate -a -l www.pool.ntp.org
 
 Cette dernière commande utilise la date *htpdate* pour synchroniser les horloges des nœuds avec le serveur [www.pool.ntp.org](https://www.ntppool.org/fr/).
 
