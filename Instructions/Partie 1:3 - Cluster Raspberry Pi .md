@@ -8,14 +8,9 @@ Ce texte est inspiré en grande partie par celui de Pier Tarandi [[1]](https://t
 
 On y présentera l'assemblage et le réglage d'un cluster Raspberry Pi 4 avec Hadoop, Spark, Zookeeper, Kafka
 
-Ce document utilise des commandes en ligne sous linux tel que `ssh` et `nano`.
-
 Cette installation a été réalisée à partir d'un mac en utilisant une connexion `ssh` vers les différents Raspberry Pi.
 
-Il est conseillé de posséder un cluster d'au moins trois Raspberry Pi 4 car vous devez définir une communication entre ces divers éléments et surtout construire une architecture Big Data composée de plusieurs éléments.
-
-
-En raison de la taille et pour des raisons pédagogiques, j'ai divisé, pour l'instant, ce tutoriel en 3 parties.
+Il est conseillé de posséder un cluster d'au moins quatre Raspberry Pi 4 car vous devez définir une communication entre ces divers éléments et surtout construire une architecture Big Data composée de plusieurs éléments.
 
 * Partie 1 : Introduction, système opérationnel et mise en réseau (mise en place et réglage du cluster)
 * Partie 2 : Hadoop et Spark
@@ -23,23 +18,23 @@ En raison de la taille et pour des raisons pédagogiques, j'ai divisé, pour l'i
 
 
 
-*Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer toutes mes sources. Étant donné que les versions des logiciels évoluent rapidement, ils avoir un comportement différent de celui attendu en raison de leurs dépendances, je vous suggère donc d'utiliser les mêmes versions que celles que j'ai utilisées. (Puis de les mettre à jour)*
+*Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer mes sources. Étant donné que les versions des logiciels évoluent rapidement, ils peut y avoir des différences avec les versions existantes. J'ai pu faire fonctionner les modules avec les versions présentées*
 
 # 1. Introduction
 
 L'objectif est de reproduire dans un cadre pédagogique et à un coût limité des clusters et une architecture big data.
 
-Sur cet environnement pédagogiques, j'utiliserai des modules pris en charge par Apache : Hadoop, Spark, Zookeeper, Kafka (qui seront reliés entre eux au fil du tutorial).
+Sur cet environnement pédagogique, j'utiliserai des modules pris en charge par Apache : Hadoop, Spark, Zookeeper, Kafka (qui seront reliés entre eux au fil du tutorial).
 
-L'environnement Big Data nécessite une solution distribuée dans le monde réel - l'évolutivité est une exigence primordiale. Ainsi, apprendre à configurer l'environnement est important dans un cadre pédagogique. C'est pourquoi je n'utiliserais pas pour cela des solutions basées sur le cloud ou à base de docker (en général plus simple à utiliser et à configurer, la programmation étant du même niveau de difficulté).
+L'environnement Big Data nécessite une solution distribuée dans le monde réel - l'évolutivité est une exigence primordiale. Ainsi, apprendre à configurer l'environnement est important dans un cadre pédagogique.
 
-Le nouveau Raspberry Pi 4 est disponible jusqu'à 8 Go de RAM. Ce n'est pas une Ferrari, mais il me parait suffisant pour une exploitation dans un cadre pédagogique. Dans notre cas, seule la version à 4 Go était disponible au moment de l'achat.
+Le nouveau Raspberry Pi 4 est disponible jusqu'à 8 Go de RAM. Dans notre cas, seule la version à 4 Go était disponible au moment de l'achat.
 
 Après lecture de quelques textes sur la façon d'assembler des clusters avec Raspberry, pour la solution Hadoop + Spark, j'ai commencé avec un cluster de raspberry pi 3. Celui-ci était un peu limité et l'usage de spark quasi impossible.
 
-PJ'ai décidé d'ajouter des Raspberry Pi 4 ce qui m'a permis d'inclure d'autre modules comme spark, cassandra...
+J'ai mis à jour les clusters avec des Raspberry Pi 4 ce qui m'a permis d'inclure d'autre modules comme spark, cassandra...
 
-Le résultat fonctionne et sa performance me permet de mener des TPs. 
+Le résultat fonctionne et sa performance me permet de mener à bien des TPs. 
 
 # 2. Assemblage du cluster
 
@@ -47,42 +42,27 @@ Cette première partie vous guidera dans l'assemblage du cluster physique, l'ins
 
 ## 2.1 De quoi avez-vous besoin ?
 
-Nous avons monté 2 clusters : un premier de base avec 3 raspberry pi 3 (remplacés par la suite par des raspberry pi 4) et un plus grand cluster composé de 22 raspberry pi 4 et de 10 raspberry pi 3.
-
-Nous donnerons les explications pour le cluster composé de 4 raspberry pi 4. 
+Nous donnerons les explications pour un cluster composé de 4 raspberry pi 4. 
 
 ## 2.1.1 Matériel utilisé
 
 * Cluster de base 
 
-	* 3 Raspberry Pi 4 4 Go 
+	* 4 Raspberry Pi 4 4 Go 
 	* 1 switch 5 ports gigabit (10/100/1000)(Netgear GS 205)
-	* 3 alimentations USB c, 15W pour raspberry pi 4
-	* 3 cartes micro SD 32 GB (SanDisk Edge) 
-	* 3 câbles 25cm Ethernet pour connecter les raspberry au switch
+	* 4 alimentations USB c, 15W pour raspberry pi 4
+	* 4 cartes micro SD 32 GB (SanDisk Edge) 
+	* 4 câbles 25cm Ethernet pour connecter les raspberry au switch
 	* 1 câble ethernet 3m 
-	* 3 MakerFun pour Raspberry Pi 4 Model B + Boîtier avec Ventilateur et radiateur en Acrylique en Couches superposables
+	* 4 MakerFun pour Raspberry Pi 4 Model B + Boîtier avec Ventilateur et radiateur en Acrylique en Couches superposables
 	* 2 multiprises 5 prises (seuls 3 chargeurs peuvent être branchés par multiprise).
-
-* Cluster étendu
-
-	* 22 Raspberry Pi 4 4 Go 
-	* 10 Raspberry Pi 3 1 Go
-	* 8 switchs 5 ports gigabit (10/100/1000)
-	* 1 switch 16 ports (10/100/1000)
-	* 20 alimentations USB c, 15W pour raspberry pi 4
-	* 32 Cartes micro SD pour vos raspberry
-	* 1 câble ethernet 3m
-	* 40 Câbles 25cm  Ethernet pour la mise en réseau
-	* 3 Alimentation 4 ports USB pour les raspberry pi 3
-	* 8 MakerFun pour Raspberry Pi 4 Model B + Boîtier avec Ventilateur et radiateur en Acrylique en Couches superposables
-	* 12 multiprises 5 prises (seuls 3 chargeurs peuvent être branchés par multiprise) avec un bouton on/off
 
 
 
 ### 2.1.2 Quelques explications sur le matériel :
 
 Le Raspberry Pi 4 dispose du wifi et d'un Ethernet gigabit. J'ai opté par un réseau câblé pour la communication en cluster, en utilisant le switch. 
+
 
 L'achat de cartes SD de bonne qualité avec une vitesse de lecture/écriture élevée est essentiel pour les performances du cluster. 
 Il est possible d'améliorer les performances en branchant une carte ssd via le port usb c [].
