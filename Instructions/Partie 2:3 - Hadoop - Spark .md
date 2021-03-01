@@ -5,13 +5,13 @@ Modifié le : 1/02/2021
 Ce texte est inspiré en grande partie par celui de Pier Tarandi [[1]](https://towardsdatascience.com/assembling-a-personal-data-science-big-data-laboratory-in-a-raspberry-pi-4-or-vms-cluster-e4c5a0473025)
 
 
-On présentera l'assemblage et le réglage d'un cluster Raspberry Pi 4 avec Hadoop, Spark, Zookeeper, Kafka
+On présentera l'assemblage et le réglage d'un cluster de Raspberry Pi 4 avec Hadoop, Spark, Zookeeper, Kafka
 
 Ce document utilise des commandes en ligne sous linux tel que ssh et nano.
 
 Cette installation a été réalisée à partir d'un mac en utilisant une connexion ssh vers les différents raspberry pi.
 
-Il est conseillé de posséder un cluster d'au moins de trois raspberry pi 4 car vous devez définir une communication entre divers éléments et créer une architecture big data.
+Il est conseillé de posséder un cluster d'au moins quatre raspberry pi 4 car vous devez définir une communication entre divers éléments et créer une architecture big data.
 
 
 En raison de la taille et pour des raisons pédagogiques, j'ai divisé pour l'instant ce tutoriel en trois parties.
@@ -22,15 +22,15 @@ En raison de la taille et pour des raisons pédagogiques, j'ai divisé pour l'in
 
 Tous les fichiers de configuration utilisés seront disponibles à l'adresse [2].
 
-*Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer toutes mes sources. Étant donné que les versions des logiciels évoluent rapidement, ils avoir un comportement différent de celui attendu en raison de leurs dépendances, je vous suggère donc d'utiliser les mêmes versions que celles que j'ai utilisées. (Puis de les mettre à jour)*
+*Avertissement : Ce tutoriel est offert gratuitement à chacun pour une utilisation à vos propres risques. J'ai pris soin de citer mes sources. Étant donné que les versions des logiciels évoluent rapidement, ils avoir un comportement différent de celui attendu en raison de leurs dépendances, je vous suggère donc d'utiliser les mêmes versions que celles que j'ai utilisées.*
 
 # 3. Installation de Hadoop et Spark
-L'installation Hadoop et Spark a suivi les instructions de [3, 4].
+L'installation Hadoop et Spark suit les instructions de [3, 4].
 
 J'ai utilisé les versions suivantes du site Web d'Apache :
 
     hadoop 3.2.2 
-    spark 3.0.1 pour hadoop 3.0
+    spark 3.0.1 pour hadoop 3.2
     
 Il vous faudra aller vérifier sur le site de spark et hadoop les numéros des dernières versions disponibles et utiliser les dernières versions.
 
@@ -74,19 +74,19 @@ ajouter à `/home/pi/.bashrc` :
 
 Attention : la version de java est 8 et le chemin est celui qui est présent sur un raspberry pi 4 et une version d'ubuntu en 64bits (la version en 32bits porte un nom légèrement différent).
 
-Après édition :
+Après édition, n'oubliez pas :
 
 `source /home/pi/.bashrc`
 
 ## 3.2 Configuration de Hadoop et de spark sur un seul nœud
 
-Maintenant, vous devez configurer Hadoop et Spark.
-
 Dans un premier temps, on configurera un seul nœud puis on passera à un cluster.
+
+Ici, on va appeler le nœud utilisé pi-nodeXX, n'oubliez pas de modifier ce nom par celui du nœeud que vous utilisez.
 
 ### 3.2.1 Hadoop
 
-Aller au dossier
+Aller dans le répertoire :
 
 `/opt/hadoop/etc/hadoop`
 
@@ -107,7 +107,7 @@ en ajoutant la ligne suivante à la fin :
         </configuration>
 
 
-remplacer `pi-nodeXX` par le nom de votre nœud. 
+N'oubliez pas de remplacer `pi-nodeXX` par le nom de votre nœud. 
 
 * Modifier la configuration dans `/opt/hadoop/etc/hadoop/hdfs-site.xml`
 
@@ -178,13 +178,13 @@ Il n'y pas de fichier `master`.
 
 * Préparer l'espace de données :
 
-        pi@pi-node29:~$  hdfs namenode -format -force
-        pi@pi-node29:~$  start-dfs.sh
-        pi@pi-node29:~$  start-yarn.sh
-        pi@pi-node29:~$  hadoop fs -mkdir /tmp
-        pi@pi-node29:~$  hadoop fs -ls /
-        Found 1 items
-        drwzr-xr-x - pi supergroup 0 2019-04-09 16:51 /tmp
+      pi@pi-node29:~$  hdfs namenode -format -force
+      pi@pi-node29:~$  start-dfs.sh
+      pi@pi-node29:~$  start-yarn.sh
+      pi@pi-node29:~$  hadoop fs -mkdir /tmp
+      pi@pi-node29:~$  hadoop fs -ls /
+      Found 1 items
+      drwzr-xr-x - pi supergroup 0 2019-04-09 16:51 /tmp
         
 Utilisez *jps* pour vérifier si tous les services sont activés (les chiffres changent..) :
 
