@@ -4,19 +4,19 @@
 
 	- Hadoop 
 	- Spark 
-	- Spark Streaming (à venir)
-	- Cassandra à venir)
-	- Kafka (à venir)
+	- Spark Streaming
+	- Cassandra
+	- Kafka
 
 - Il sera représenté les phases de :
 	- construction du cluster (*cf. dossier instruction*)
 	- configuration du système support (*cf. dossier instruction*)
 	- installation et test des modules :
 		- Hadoop (TP1)
-		- Spark (TP2)
-		- Spark Streaming (TP2)
-		- Cassandra (à venir)
-		- Kafka (à venir)
+		- Kafka (TP2)
+		- Spark (TP3)
+		- Spark Streaming (TP4)
+		- Cassandra (TP5)
 
 - Il sera également présenté des tests ou des exemples d'utilisation.
 
