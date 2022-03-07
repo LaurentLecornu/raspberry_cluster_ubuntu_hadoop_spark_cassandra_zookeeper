@@ -17,20 +17,26 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-  <property>
-    <name>dfs.namenode.name.dir</name>
-    <value>/opt/hadoop_tmp/hdfs/namenode</value>
-  </property>
-  <property>
-    <name>dfs.datanode.data.dir</name>
-    <value>/opt/hadoop_tmp/hdfs/datanode</value>
-  </property>
-  <property>
-    <name>dfs.replication</name>
-    <value>1</value>
-  </property>
-  <property>
-    <name>dfs.permissions.enabled</name>
-    <value>false</value>
-  </property>
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>/opt/hadooptmp/hdfs/datanode</value>
+        <final>true</final>
+    </property>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>/opt/hadooptmp/hdfs/namenode</value>
+        <final>true</final>
+    </property>
+    <property>
+        <name>dfs.namenode.http-address</name>
+        <value>pi-master-haddop:50070</value>
+    </property>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+    <property>
+        <name>dfs.blocksize</name>
+        <value>16384000</value>
+    </property>
 </configuration>

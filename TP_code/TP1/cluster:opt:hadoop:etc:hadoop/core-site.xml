@@ -17,8 +17,16 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-  <property>
-    <name>fs.default.name</name>
-    <value>hdfs://pi-node29:9000</value>
-  </property>
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/opt/hadooptmp</value>
+    </property>
+    <property>
+        <name>fs.default.name</name>
+        <value>hdfs://pi-master-haddop:9000</value>
+    </property>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://pi-master-haddop:9000</value>
+    </property>
 </configuration>
