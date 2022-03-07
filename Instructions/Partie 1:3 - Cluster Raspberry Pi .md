@@ -11,6 +11,7 @@ On y présentera l'assemblage et le réglage d'un cluster Raspberry Pi 4 avec Ha
 Cette installation a été réalisée à partir d'un mac en utilisant une connexion `ssh` vers les différents Raspberry Pi.
 
 Il est conseillé de posséder un cluster d'au moins quatre Raspberry Pi 4 car vous devez définir une communication entre ces divers éléments et surtout construire une architecture Big Data composée de plusieurs éléments.
+Ici, nous utiliserons 3 raspberri pi 4 et 2 raspberry pi 3.
 
 * Partie 1 : Introduction, système opérationnel et mise en réseau (mise en place et réglage du cluster)
 * Partie 2 : Hadoop et Spark
@@ -48,11 +49,12 @@ Nous donnerons les explications pour un cluster composé de 4 raspberry pi 4.
 
 * Cluster de base 
 
-	* 4 Raspberry Pi 4 4 Go 
-	* 1 switch 5 ports gigabit (10/100/1000)(Netgear GS 205)
-	* 4 alimentations USB c, 15W pour raspberry pi 4
-	* 4 cartes micro SD 32 GB (SanDisk Edge) 
-	* 4 câbles 25cm Ethernet pour connecter les raspberry au switch
+	* 3 Raspberry Pi 4 4 Go 
+	* 2 Raspberry Pi 3 1 Go 
+	* 1 switch 8 ports gigabit (10/100/1000)(Netgear GS 308)
+	* 3 alimentations USB c, 15W pour raspberry pi 4
+	* 5 cartes micro SD 32 GB (SanDisk Edge) 
+	* 5 câbles 25cm Ethernet pour connecter les raspberry au switch
 	* 1 câble ethernet 3m 
 	* 4 MakerFun pour Raspberry Pi 4 Model B + Boîtier avec Ventilateur et radiateur en Acrylique en Couches superposables
 	* 2 multiprises 5 prises (seuls 3 chargeurs peuvent être branchés par multiprise).
